@@ -45,5 +45,8 @@ gradle-app.setting
 hs_err_pid*
 replay_pid*
 
+**/.idea/
+!src/**/.idea/
+
 # Ignorar el archivo application.properties
 src/main/resources/application.properties
