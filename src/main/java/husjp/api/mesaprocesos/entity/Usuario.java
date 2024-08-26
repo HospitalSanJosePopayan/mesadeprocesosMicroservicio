@@ -2,30 +2,28 @@ package husjp.api.mesaprocesos.entity;
 
 import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "USUARIO")
-public class Usuario  {
+@NoArgsConstructor
+@PrimaryKeyJoinColumn(name ="idPersona")
+public class Usuario  extends Persona {
 
-    @Id
-    private String documento;
+    public Usuario (String documento, String nombreCompleto){
+        super(documento, nombreCompleto);
+    }
+
     private String password;
     private Boolean estado;
-    private String nombrecompleto;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "usuarios_roles",
-        joinColumns = @JoinColumn(name = "usuario_documento"),
+        joinColumns = @JoinColumn(name = "idPersona"),
         inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
     private Set<Rol> roles;
