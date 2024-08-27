@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@PrimaryKeyJoinColumn(name ="idPersona")
+@PrimaryKeyJoinColumn(name ="id_persona")
 public class Usuario  extends Persona {
 
     public Usuario (String documento, String nombreCompleto){
