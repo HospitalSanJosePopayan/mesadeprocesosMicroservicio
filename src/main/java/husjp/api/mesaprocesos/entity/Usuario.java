@@ -24,14 +24,14 @@ public class Usuario  extends Persona {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "usuarios_roles",
-        joinColumns = @JoinColumn(name = "idPersona"),
+        joinColumns = @JoinColumn(name = "id_persona"),
         inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
     private Set<Rol> roles;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "areas_servicios_usuarios",
-            joinColumns = @JoinColumn(name = "idPersona"),
+            joinColumns = @JoinColumn(name = "id_persona"),
             inverseJoinColumns = @JoinColumn(name = "idarea")
     )
     private Set<AreaServicio> areaServicios;
