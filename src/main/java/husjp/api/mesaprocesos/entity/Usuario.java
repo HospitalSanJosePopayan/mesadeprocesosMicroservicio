@@ -1,5 +1,6 @@
 package husjp.api.mesaprocesos.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -27,8 +28,14 @@ public class Usuario  extends Persona {
         inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
     private Set<Rol> roles;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idarea")
-    private AreaServicio areaServicioUsuario;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "areas_servicios_usuarios",
+            joinColumns = @JoinColumn(name = "idPersona"),
+            inverseJoinColumns = @JoinColumn(name = "idarea")
+    )
+    private Set<AreaServicio> areaServicios;
 
+    @OneToMany(mappedBy = "usuario")
+    private List<UsuarioProceso> usuarioProcesos;
 }

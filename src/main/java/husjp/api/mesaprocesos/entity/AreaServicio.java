@@ -2,11 +2,7 @@ package husjp.api.mesaprocesos.entity;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -17,7 +13,7 @@ public class AreaServicio {
     private Integer idarea;
     private String nombre;
     private String tipo;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "areaServicioUsuario")
+    @ManyToMany(mappedBy = "areaServicios")
     private List<Usuario> usuarios;
 
 }
