@@ -17,7 +17,7 @@ import lombok.Data;
 public class Proceso {
     @Id
     private Integer idproceso;
-    private String Nombre;
+    private String nombre;
     private String descripcion;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "proceso")

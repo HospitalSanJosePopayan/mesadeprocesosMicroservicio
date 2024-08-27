@@ -3,13 +3,7 @@ package husjp.api.mesaprocesos.entity;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 @Entity
  @Data
@@ -20,7 +14,9 @@ public class UsuarioProceso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer estado;
+    @Column(name = "fecha_inicio")
     private LocalDateTime fechaInicio;
+    @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
     private String enlace;
 

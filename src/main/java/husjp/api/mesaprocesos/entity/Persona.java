@@ -12,9 +12,11 @@ public class Persona {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_persona")
     private Integer idPersona;
     @Column(unique = true)
     private String documento;
+    @Column(name = "nombre_completo")
     private String nombreCompleto;
 
     public Persona (String documento, String nombreCompleto){

@@ -15,8 +15,8 @@ import lombok.Data;
 public class AreaServicio {
     @Id
     private Integer idarea;
-    private String Nombre;
-    private String Tipo;
+    private String nombre;
+    private String tipo;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "areaServicioUsuario")
     private List<Usuario> usuarios;
 

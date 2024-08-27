@@ -12,7 +12,7 @@ public class SubProceso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idSubProceso;
-    private String NombreSubproceso;
+    private String nombreSubproceso;
     private String descripcion;
     @ManyToOne
     @JoinColumn(name = "idproceso")
