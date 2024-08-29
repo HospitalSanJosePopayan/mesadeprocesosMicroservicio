@@ -11,9 +11,6 @@ public interface UsuarioProcesoRepository extends JpaRepository<UsuarioProceso,I
 
     @Query("SELECT up FROM UsuarioProceso up WHERE up.usuario.id = :idUsuario")
     List<UsuarioProceso> findAllByUsuarioId(@Param("idUsuario") String idUsuario);
+    List<UsuarioProceso> findAllByUsuarioDocumento(String documento);
 
-    @Query("SELECT up FROM UsuarioProceso up WHERE up.usuario.areaServicioUsuario.id = :idarea")
-    List<UsuarioProceso> findAllByAreaId(@Param("idarea") Integer idarea);
-    
-    
 }

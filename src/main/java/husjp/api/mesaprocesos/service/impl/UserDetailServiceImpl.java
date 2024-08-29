@@ -22,7 +22,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Usuario usuario = usuarioRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException("No se encontro usuario con username: "+username));
+        Usuario usuario = usuarioRepository.findByDocumento(username).orElseThrow(() -> new UsernameNotFoundException("No se encontro usuario con username: "+username));
 
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
 

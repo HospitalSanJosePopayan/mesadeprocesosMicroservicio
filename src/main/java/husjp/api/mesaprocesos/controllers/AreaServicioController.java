@@ -2,10 +2,10 @@ package husjp.api.mesaprocesos.controllers;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import husjp.api.mesaprocesos.service.dto.ProcesoDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import husjp.api.mesaprocesos.service.IAreaServicioService;
 import husjp.api.mesaprocesos.service.dto.AreaServicioDTO;
@@ -22,8 +22,8 @@ public class AreaServicioController {
 
     @Operation(summary = "Listar todas las áreas de servicio Obtiene una lista de todas las áreas de servicio disponibles.")
     @GetMapping
-    public List<AreaServicioDTO> ListarAreasServicio() {
-        return areaServicioService.obtenerAreasServicio();
+    public ResponseEntity<List<AreaServicioDTO>> ListarAreasServicio() {
+        return new ResponseEntity<>(areaServicioService.obtenerAreasServicio(), HttpStatus.OK);
     }
 
 }
