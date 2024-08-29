@@ -36,6 +36,6 @@ public class Usuario  extends Persona {
     )
     private Set<AreaServicio> areaServicios;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<UsuarioProceso> usuarioProcesos;
 }

@@ -15,6 +15,7 @@ public class UsuarioProcesoDTO {
     private LocalDateTime fechaFin;
     private String Idusuario;
     private Integer IdsubProceso;
+    private  Integer IdProceso;
     private String descripcionSubproceso;
     private String NombreUsuario;
     private String enlace;
