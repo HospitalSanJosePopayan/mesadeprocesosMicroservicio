@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import husjp.api.mesaprocesos.entity.Proceso;
+import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
+import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
 import husjp.api.mesaprocesos.repository.ProcesoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -64,7 +66,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         if(usuario.isPresent()) {
             List<UsuarioProceso> usuarioProcesos = usuarioProcesoRepository.findAllByUsuarioDocumento(documentoUsuario);
             if(usuarioProcesos.isEmpty()) {
-                throw new IllegalArgumentException("El Usuario no tiene  subprocesos agendados   ");
+                throw new EntidadSinAsignaciones("El Usuario no tiene  subprocesos agendados ");
             }
             return usuarioProcesos.stream().map(up -> {
                 UsuarioProcesoDTO dto = new UsuarioProcesoDTO();
@@ -79,7 +81,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             }).collect(Collectors.toList());
 
         }
-        throw new IllegalArgumentException("El Usuario " +  documentoUsuario+ "  no se encuentra Registrado en la base de  Datos ");
+        throw new EntidadNoExisteException("El Usuario No se encuentra");
 
     }
     @Override
@@ -87,18 +89,18 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
 
         Optional<Proceso> procesoOpt = procesoRepository.findById(usuarioProcesoDTO.getIdProceso());
         if(!procesoOpt.isPresent()){
-            throw  new IllegalArgumentException("el proceso Con ID "+ usuarioProcesoDTO.getIdProceso()+"No se encuentra registrado en la base de datos");
+            throw  new EntidadNoExisteException("No se encontro el Proceso ");
         }
 
         Optional<SubProceso> subProcesoOpt = subProcesoRepository.findById(usuarioProcesoDTO.getIdsubProceso());
         if (!subProcesoOpt.isPresent()) {
-            throw new IllegalArgumentException("El SubProceso con ID " + usuarioProcesoDTO.getIdsubProceso() + " no existe.");
+            throw new EntidadNoExisteException("No se encontro el subproceso");
         }
 
         // Buscar el usuario por su documento en lugar de por ID
         Optional<Usuario> usuarioOpt = usuarioRespository.findByDocumento(usuarioProcesoDTO.getIdusuario());
         if (!usuarioOpt.isPresent()) {
-            throw new IllegalArgumentException("El Usuario con documento " + usuarioProcesoDTO.getIdusuario() + " no existe.");
+            throw new EntidadNoExisteException("No se encontro el Usuario");
         }
 
         UsuarioProceso usuarioSubProceso = modelMapper.map(usuarioProcesoDTO, UsuarioProceso.class);
@@ -131,7 +133,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             // Convertir la entidad guardada en DTO y devolverla
             return modelMapper.map(savedUsuarioProceso, UsuarioProcesoDTO.class);
         } else {
-            throw new IllegalArgumentException("No existe el Usuario proceso registrado en la base de datos .");
+            throw new EntidadNoExisteException("No se encontro el usuarioproceso");
         }
     }
    
@@ -146,7 +148,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             UsuarioProceso savedUsuarioProceso = usuarioProcesoRepository.save(usuarioProceso);
             return modelMapper.map(savedUsuarioProceso, UsuarioProcesoDTO.class);
         }else {
-            throw new IllegalArgumentException("UsuarioProceso no encontrado.");
+            throw new EntidadNoExisteException("No se encontro el usuarioproceso ");
         }
     }
 
@@ -170,7 +172,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
        if(usuOptional.isPresent()){
          usuarioProcesoRepository.deleteById(id);
        }else{
-        throw new IllegalArgumentException("UsuarioProceso no encontrado.");
+        throw new  EntidadNoExisteException ("UsuarioProceso no encontrado.");
        } 
 
     }
@@ -178,12 +180,13 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
     @Override
     public List<UsuarioProcesoDTO> obtenerUsuarioProcesoArea(Integer idArea) {
         if (idArea == null || idArea <= 0) {
-            throw new IllegalArgumentException("El id del área no puede ser nulo o negativo");
+            throw new Error("El id del área no puede ser nulo o negativo");
+
         }
         List<Usuario> usuarioPorArea = usuarioRespository.usuariosPorIdArea(idArea);
 
         if (usuarioPorArea == null || usuarioPorArea.isEmpty()) {
-            throw new IllegalArgumentException("No se encontraron usuarios para el área especificada");
+            throw new EntidadNoExisteException ("No se encontraron usuarios para el área especificada");
         }
         List<UsuarioProcesoDTO> response = new ArrayList<>();
         for (Usuario usuario : usuarioPorArea) {
@@ -213,11 +216,11 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
     public UsuarioProcesoDTO transferirSubprocesoAUsuario(Integer idUsuarioProceso, String nuevoUsuarioId) {
         Optional<UsuarioProceso> usuarioProcesoOpt = usuarioProcesoRepository.findById(idUsuarioProceso);
         if (!usuarioProcesoOpt.isPresent()) {
-            throw new IllegalArgumentException("UsuarioProceso no encontrado.");
+            throw  new EntidadNoExisteException ("UsuarioProceso no encontrado.");
         }
         Optional<Usuario> nuevoUsuarioOpt = usuarioRespository.findByDocumento(nuevoUsuarioId);
         if (!nuevoUsuarioOpt.isPresent()) {
-            throw new IllegalArgumentException("Usuario con ID " + nuevoUsuarioId + " no encontrado.");
+            throw new EntidadNoExisteException("Usuario No Encontrado");
         }
         // Actualizar el UsuarioProceso con el nuevo usuario
         UsuarioProceso usuarioProceso = usuarioProcesoOpt.get();
