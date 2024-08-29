@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import husjp.api.mesaprocesos.entity.Proceso;
+import husjp.api.mesaprocesos.repository.ProcesoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,43 +27,68 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
 
 	private UsuarioProcesoRepository usuarioProcesoRepository;
     private SubProcesoRepository subProcesoRepository;
+    private ProcesoRepository procesoRepository;
     private UsuarioRepository usuarioRespository;
     private ModelMapper modelMapper;
     @Override
     public List<UsuarioProcesoDTO> obtenerUsuariosprocesos() {
         return usuarioProcesoRepository.findAll().stream()
-        .map(usuarioProceso -> {
-            UsuarioProcesoDTO dto = modelMapper.map(usuarioProceso, UsuarioProcesoDTO.class);
-            dto.setIdusuario(usuarioProceso.getUsuario().getDocumento());
-            dto.setIdsubProceso(usuarioProceso.getSubProceso().getIdSubProceso());
-            //dto.setNombreUsuario(usuarioProceso.getUsuario().getNombreCompleto());
-            dto.setDescripcionSubproceso(usuarioProceso.getSubProceso().getDescripcion());
-            return dto;
-        })
-        .collect(Collectors.toList()); 
+                .map(usuarioProceso -> {
+                    UsuarioProcesoDTO dto = new UsuarioProcesoDTO();
+                    Usuario usuario = usuarioProceso.getUsuario();
+                    if (usuario == null || usuario.getDocumento() == null || usuario.getDocumento().isEmpty()) {
+                        throw new IllegalArgumentException("El Usuario o su documento es nulo o vacío en el proceso con ID: " + usuarioProceso.getId());
+                    }
+                    SubProceso subProceso = usuarioProceso.getSubProceso();
+                    if (subProceso == null || subProceso.getIdSubProceso() == null) {
+                        throw new IllegalArgumentException("El SubProceso o su ID es nulo en el proceso con ID: " + usuarioProceso.getId());
+                    }
+                    dto.setId(usuarioProceso.getId());
+                    dto.setEstado(usuarioProceso.getEstado());
+                    dto.setFechaInicio(usuarioProceso.getFechaInicio());
+                    dto.setFechaFin(usuarioProceso.getFechaFin());
+                    dto.setEnlace(usuarioProceso.getEnlace());
+                    dto.setIdusuario(usuario.getDocumento());
+                    dto.setIdsubProceso(subProceso.getIdSubProceso());
+                    dto.setDescripcionSubproceso(subProceso.getDescripcion());
+                    dto.setIdProceso(usuarioProceso.getSubProceso().getProceso().getIdproceso());
+                    dto.setNombreUsuario(usuarioProceso.getUsuario().getNombreCompleto());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<UsuarioProcesoDTO> obtenerprocesosPorUsuario(String documentoUsuario) {
-        // Buscar procesos utilizando el documento del usuario
-        List<UsuarioProceso> usuarioProcesos = usuarioProcesoRepository.findAllByUsuarioDocumento(documentoUsuario);
+        Optional<Usuario> usuario = usuarioRespository.findByDocumento(documentoUsuario);
+        if(usuario.isPresent()) {
+            List<UsuarioProceso> usuarioProcesos = usuarioProcesoRepository.findAllByUsuarioDocumento(documentoUsuario);
+            if(usuarioProcesos.isEmpty()) {
+                throw new IllegalArgumentException("El Usuario no tiene  subprocesos agendados   ");
+            }
+            return usuarioProcesos.stream().map(up -> {
+                UsuarioProcesoDTO dto = new UsuarioProcesoDTO();
+                dto.setId(up.getId());
+                dto.setEstado(up.getEstado());
+                dto.setFechaInicio(up.getFechaInicio());
+                dto.setFechaFin(up.getFechaFin());
+                dto.setIdusuario(up.getUsuario().getDocumento());  // Este será el documento del usuario
+                dto.setIdsubProceso(up.getSubProceso().getIdSubProceso());
+                dto.setDescripcionSubproceso(up.getSubProceso().getDescripcion());
+                return dto;
+            }).collect(Collectors.toList());
 
-        // Mapear la lista de entidades UsuarioProceso a DTOs
-        return usuarioProcesos.stream().map(up -> {
-            UsuarioProcesoDTO dto = new UsuarioProcesoDTO();
-            dto.setId(up.getId());
-            dto.setEstado(up.getEstado());
-            dto.setFechaInicio(up.getFechaInicio());
-            dto.setFechaFin(up.getFechaFin());
-            dto.setIdusuario(up.getUsuario().getDocumento());  // Este será el documento del usuario
-            dto.setIdsubProceso(up.getSubProceso().getIdSubProceso());
-            dto.setDescripcionSubproceso(up.getSubProceso().getDescripcion());
-            return dto;
-        }).collect(Collectors.toList());
+        }
+        throw new IllegalArgumentException("El Usuario " +  documentoUsuario+ "  no se encuentra Registrado en la base de  Datos ");
+
     }
-
     @Override
     public UsuarioProcesoDTO crearUsuarioProceso(UsuarioProcesoDTO usuarioProcesoDTO) {
+
+        Optional<Proceso> procesoOpt = procesoRepository.findById(usuarioProcesoDTO.getIdProceso());
+        if(!procesoOpt.isPresent()){
+            throw  new IllegalArgumentException("el proceso Con ID "+ usuarioProcesoDTO.getIdProceso()+"No se encuentra registrado en la base de datos");
+        }
 
         Optional<SubProceso> subProcesoOpt = subProcesoRepository.findById(usuarioProcesoDTO.getIdsubProceso());
         if (!subProcesoOpt.isPresent()) {
@@ -85,7 +112,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         return modelMapper.map(savedUsuarioSubProceso, UsuarioProcesoDTO.class);
     }
 
-
     @Override
     public UsuarioProcesoDTO actualizarUsuarioProcesoFecha(Integer id, LocalDateTime nuevaFechaFin) {
         Optional<UsuarioProceso> usuOptional = usuarioProcesoRepository.findById(id);
@@ -105,7 +131,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             // Convertir la entidad guardada en DTO y devolverla
             return modelMapper.map(savedUsuarioProceso, UsuarioProcesoDTO.class);
         } else {
-            throw new IllegalArgumentException("UsuarioProceso no encontrado.");
+            throw new IllegalArgumentException("No existe el Usuario proceso registrado en la base de datos .");
         }
     }
    
