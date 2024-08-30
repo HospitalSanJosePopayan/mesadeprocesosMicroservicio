@@ -37,7 +37,7 @@ public class SubProcesoController {
     @GetMapping("/{idProceso}")
     public ResponseEntity<List<SubProcesoDTO>> listarSubprocesosPorArea(
             @PathVariable(name = "idProceso") Integer idProceso) {
-        return new ResponseEntity<>(subProcesoService.obtenerSubprocesosporArea(idProceso), HttpStatus.OK);
+        return new ResponseEntity<>(subProcesoService.obtenerSubprocesosporProceso(idProceso), HttpStatus.OK);
     }
 
     @Operation(summary = "Crea un nuevo subproceso para un proceso en Especifico")

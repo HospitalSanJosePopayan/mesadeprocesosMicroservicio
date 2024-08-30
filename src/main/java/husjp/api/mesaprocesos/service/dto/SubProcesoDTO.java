@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class SubProcesoDTO {
 	private Integer idSubProceso;
- 	private String NombreSubproceso;
+ 	private String nombreSubproceso;
  	private String descripcion;
-	private Integer proceso;
+	private Integer idproceso;
 
 }
