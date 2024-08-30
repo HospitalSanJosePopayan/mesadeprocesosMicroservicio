@@ -18,13 +18,13 @@ import husjp.api.mesaprocesos.service.ISubProcesoService;
 import husjp.api.mesaprocesos.service.dto.SubProcesoDTO;
 import lombok.AllArgsConstructor;
 
-
 @Service
 @AllArgsConstructor
-public class SubProcesoImpl implements ISubProcesoService  {
- private SubProcesoRepository subProcesoRepository;
- private ProcesoRepository procesosRepository;
- private final ModelMapper modelMapper;
+public class SubProcesoImpl implements ISubProcesoService {
+    private SubProcesoRepository subProcesoRepository;
+    private ProcesoRepository procesosRepository;
+    private final ModelMapper modelMapper;
+
     @Override
     public List<SubProcesoDTO> obtenerSubprocesos() {
         List<SubProceso> subProcesos = subProcesoRepository.findAll();
@@ -42,6 +42,7 @@ public class SubProcesoImpl implements ISubProcesoService  {
         }
         return subProcesoDTOS;
     }
+
     @Override
     public List<SubProcesoDTO> obtenerSubprocesosporProceso(Integer idProceso) {
         Optional<Proceso> procesoOpt = procesosRepository.findById(idProceso);
@@ -81,11 +82,11 @@ public class SubProcesoImpl implements ISubProcesoService  {
     public SubProcesoDTO actualizarSubproceso(Integer id, SubProcesoDTO subProcesoDTO) {
         Optional<SubProceso> optionalSubProceso = subProcesoRepository.findById(id);
         if (optionalSubProceso.isPresent()) {
-            SubProceso subProceso = optionalSubProceso.get();
+             SubProceso subProceso = optionalSubProceso.get();
             subProceso.setNombreSubproceso(subProcesoDTO.getNombreSubproceso());
             subProceso.setDescripcion(subProcesoDTO.getDescripcion());
             Proceso proceso = procesosRepository.findById(subProcesoDTO.getIdproceso())
-                .orElseThrow(() -> new EntidadNoExisteException ("Proceso no encontrado"));
+                    .orElseThrow(() -> new EntidadNoExisteException("Proceso no encontrado"));
             subProceso.setProceso(proceso);
             SubProceso updatedSubProceso = subProcesoRepository.save(subProceso);
             SubProcesoDTO response = modelMapper.map(updatedSubProceso, SubProcesoDTO.class);
@@ -95,5 +96,4 @@ public class SubProcesoImpl implements ISubProcesoService  {
             throw new EntidadNoExisteException("SubProceso no encontrado");
         }
     }
-    
 }
