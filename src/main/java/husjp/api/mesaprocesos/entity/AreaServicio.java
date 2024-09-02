@@ -9,7 +9,9 @@ import lombok.Data;
 @Data
 @Table(name = "AreaServicio")
 public class AreaServicio {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idarea;
     private String nombre;
     private String tipo;
