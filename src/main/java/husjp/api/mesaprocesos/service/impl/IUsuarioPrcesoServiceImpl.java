@@ -1,9 +1,7 @@
 package husjp.api.mesaprocesos.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import husjp.api.mesaprocesos.entity.Proceso;
@@ -76,9 +74,13 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                 dto.setFechaFin(up.getFechaFin());
                 dto.setIdusuario(up.getUsuario().getDocumento());  // Este será el documento del usuario
                 dto.setIdsubProceso(up.getSubProceso().getIdSubProceso());
+                dto.setIdProceso(up.getSubProceso().getProceso().getIdproceso());
                 dto.setDescripcionSubproceso(up.getSubProceso().getDescripcion());
+                dto.setNombreUsuario(up.getUsuario().getNombreCompleto());
+                dto.setEnlace(up.getEnlace());
                 return dto;
             }).collect(Collectors.toList());
+
 
         }
         throw new EntidadNoExisteException("El Usuario No se encuentra");
@@ -181,36 +183,39 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
     public List<UsuarioProcesoDTO> obtenerUsuarioProcesoArea(Integer idArea) {
         if (idArea == null || idArea <= 0) {
             throw new Error("El id del área no puede ser nulo o negativo");
-
         }
         List<Usuario> usuarioPorArea = usuarioRespository.usuariosPorIdArea(idArea);
 
         if (usuarioPorArea == null || usuarioPorArea.isEmpty()) {
-            throw new EntidadNoExisteException ("No se encontraron usuarios para el área especificada");
+            throw new EntidadSinAsignaciones ("La Area Seleccionada no tiene Asignaciones de procesos");
         }
         List<UsuarioProcesoDTO> response = new ArrayList<>();
+        Set<Integer> idUsuarioProcesoUnicos = new HashSet<>();
         for (Usuario usuario : usuarioPorArea) {
             List<UsuarioProceso> usuarioProcesos = usuario.getUsuarioProcesos();
             if (usuarioProcesos != null && !usuarioProcesos.isEmpty()) {
                 for (UsuarioProceso usuarioProceso : usuarioProcesos) {
-                    UsuarioProcesoDTO usuarioProcesoDTO = new UsuarioProcesoDTO();
-                    usuarioProcesoDTO.setIdusuario(usuario.getDocumento());
-                    usuarioProcesoDTO.setIdsubProceso(usuarioProceso.getId());
-                    usuarioProcesoDTO.setNombreUsuario(usuario.getNombreCompleto());
-                    usuarioProcesoDTO.setId(usuarioProceso.getId());
-                    usuarioProcesoDTO.setIdProceso(usuarioProceso.getSubProceso().getProceso().getIdproceso());
-                    usuarioProcesoDTO.setDescripcionSubproceso(usuarioProceso.getSubProceso().getDescripcion());
-                    usuarioProcesoDTO.setFechaInicio(usuarioProceso.getFechaInicio());
-                    usuarioProcesoDTO.setFechaFin(usuarioProceso.getFechaFin());
-                    usuarioProcesoDTO.setEstado(usuarioProceso.getEstado());
-                    response.add(usuarioProcesoDTO);
+                    Integer idUsuarioProceso = usuarioProceso.getId();
+                    if (!idUsuarioProcesoUnicos.contains(idUsuarioProceso)) {
+                        idUsuarioProcesoUnicos.add(idUsuarioProceso);
+                        UsuarioProcesoDTO usuarioProcesoDTO = new UsuarioProcesoDTO();
+                        usuarioProcesoDTO.setIdusuario(usuario.getDocumento());
+                        usuarioProcesoDTO.setIdsubProceso(usuarioProceso.getId());
+                        usuarioProcesoDTO.setNombreUsuario(usuario.getNombreCompleto());
+                        usuarioProcesoDTO.setId(idUsuarioProceso);
+                        usuarioProcesoDTO.setIdProceso(usuarioProceso.getSubProceso().getProceso().getIdproceso());
+                        usuarioProcesoDTO.setDescripcionSubproceso(usuarioProceso.getSubProceso().getDescripcion());
+                        usuarioProcesoDTO.setFechaInicio(usuarioProceso.getFechaInicio());
+                        usuarioProcesoDTO.setFechaFin(usuarioProceso.getFechaFin());
+                        usuarioProcesoDTO.setEstado(usuarioProceso.getEstado());
+
+                        response.add(usuarioProcesoDTO);
+                    }
                 }
             }
         }
-
         return response;
     }
-
 
     @Override
     public UsuarioProcesoDTO transferirSubprocesoAUsuario(Integer idUsuarioProceso, String nuevoUsuarioId) {

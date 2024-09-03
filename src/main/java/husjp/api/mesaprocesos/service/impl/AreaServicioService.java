@@ -1,10 +1,15 @@
 package husjp.api.mesaprocesos.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import husjp.api.mesaprocesos.entity.AreaServicio;
+import husjp.api.mesaprocesos.entity.Usuario;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
+import husjp.api.mesaprocesos.service.dto.UsuarioDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +20,7 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class AreaServicioService implements IAreaServicioService {
+
     private AreaServicioRepository areaServicioRepository;
     private final ModelMapper modelMapper;
     @Override
@@ -27,4 +33,30 @@ public class AreaServicioService implements IAreaServicioService {
       }
         return areaDtos;
     }
+    @Override
+    public List<UsuarioDTO> buscarUsuarioporArea(Integer idArea) {
+        Optional<AreaServicio> areaOpt = areaServicioRepository.findById(idArea);
+        if (areaOpt.isPresent()){
+            if (!areaOpt.get().getUsuarios().isEmpty()){
+                List<UsuarioDTO> usuarioDTOs = new ArrayList<>();
+                List<Usuario> usuarios = areaOpt.get().getUsuarios();
+                for (Usuario usuario : usuarios) {
+                    UsuarioDTO usuarioDTO = new UsuarioDTO();
+                    usuarioDTO.setDocumento(usuario.getDocumento());
+                    usuarioDTO.setNombrecompleto(usuario.getNombreCompleto());
+                    usuarioDTOs.add(usuarioDTO);
+                }
+                return usuarioDTOs;
+            }
+            throw new EntidadSinAsignaciones("El Area no tiene Usuarios Asociados");
+        }
+        throw  new EntidadNoExisteException("No Existe la entidad ");
+
+    }
+
+
+
+
+
 }
+

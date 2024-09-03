@@ -3,6 +3,7 @@ package husjp.api.mesaprocesos.controllers;
 import java.util.List;
 
 import husjp.api.mesaprocesos.service.dto.ProcesoDTO;
+import husjp.api.mesaprocesos.service.dto.UsuarioDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,12 @@ public class AreaServicioController {
     @GetMapping
     public ResponseEntity<List<AreaServicioDTO>> ListarAreasServicio() {
         return new ResponseEntity<>(areaServicioService.obtenerAreasServicio(), HttpStatus.OK);
+    }
+    @Operation(summary = "Listar Usuarios  por Area")
+    @GetMapping("/{idArea}")
+    public  ResponseEntity<List<UsuarioDTO>> ListarUsuarios(@PathVariable(name = "idArea")Integer idArea){
+       return  new ResponseEntity<>(areaServicioService.buscarUsuarioporArea(idArea),HttpStatus.OK);
+
     }
 
 }

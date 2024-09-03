@@ -35,9 +35,9 @@ public class UsuarioProcesosController {
     }
 
     @Operation(summary = "obtener todos los subprocesos asignados a un usuario especifico")
-    @GetMapping("/{usuarioid}")
-    public List<UsuarioProcesoDTO> listarUsurioProceso(@PathVariable(name = "usuarioid") String usuarioid) {
-        return usuarioProcesoService.obtenerprocesosPorUsuario(usuarioid);
+    @GetMapping("/{documento}")
+    public List<UsuarioProcesoDTO> listarUsurioProceso(@PathVariable(name = "documento") String documento) {
+        return usuarioProcesoService.obtenerprocesosPorUsuario(documento );
     }
     @Operation(summary = "Asignar un subproceso a un usuario especifico")
     @PostMapping
