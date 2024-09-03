@@ -35,6 +35,12 @@ public class RestApiExceptionHandler {
         final Error error = ErrorUtils.crearError(CodigoError.ENTIDAD_NO_ENCONTRADA.getCodigo(), String.format("%s, %s", CodigoError.ENTIDAD_NO_ENCONTRADA.getLlaveMensaje(), ex.getMessage()), HttpStatus.NOT_FOUND.value()).setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+// crea la excepcion de entidad sin asignaciones
+    @ExceptionHandler(EntidadSinAsignaciones.class)
+    public ResponseEntity<Error> handleGenericException(final HttpServletRequest req, final EntidadSinAsignaciones ex, final Locale locale){
+        final Error error = ErrorUtils.crearError(CodigoError.SIN_ASOCIACIONES.getCodigo(), String.format("%s, %s", CodigoError.SIN_ASOCIACIONES.getLlaveMensaje(), ex.getMessage()), HttpStatus.NOT_FOUND.value()).setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
     //este metodo se ejecuta automaticamente con el valid
     @ExceptionHandler(MethodArgumentNotValidException.class)

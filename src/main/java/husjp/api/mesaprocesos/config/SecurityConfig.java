@@ -32,6 +32,8 @@ public class SecurityConfig {
                         //ejemplo para proteger un endpoint
                         authorizeRequests.requestMatchers(HttpMethod.GET, "ejemplo/prueba").hasAnyRole("ADMIN");
                         authorizeRequests.requestMatchers(HttpMethod.GET,"AreaServicio").hasAnyRole("ADMIN","COORD");
+                        authorizeRequests.requestMatchers(HttpMethod.GET,"AreaServicio/{idArea}").hasAnyRole("ADMIN","COORD");
+
                       // Procesos
                         authorizeRequests.requestMatchers(HttpMethod.GET,"procesos").hasAnyRole("ADMIN","COORD");
                         authorizeRequests.requestMatchers(HttpMethod.POST,"procesos").hasAnyRole("ADMIN","COORD");
@@ -44,7 +46,7 @@ public class SecurityConfig {
                         authorizeRequests.requestMatchers(HttpMethod.GET,"subprocesos/{id}").hasAnyRole("ADMIN","COORD");
                         //UsuariosProcesos;
                         authorizeRequests.requestMatchers(HttpMethod.GET,"usuarioprocesos").hasAnyRole("ADMIN","COORD");
-                        authorizeRequests.requestMatchers(HttpMethod.GET,"usuarioprocesos/{usuarioid}").hasAnyRole("ADMIN","COORD");
+                        authorizeRequests.requestMatchers(HttpMethod.GET,"usuarioprocesos/{documento}").hasAnyRole("ADMIN","COORD");
                         authorizeRequests.requestMatchers(HttpMethod.GET,"usuarioprocesos/area/{idArea}").hasAnyRole("ADMIN","COORD");
                         authorizeRequests.requestMatchers(HttpMethod.POST,"usuarioprocesos").hasAnyRole("ADMIN","COORD");
                         authorizeRequests.requestMatchers(HttpMethod.PUT,"usuarioprocesos/{id}").hasAnyRole("ADMIN","COORD");

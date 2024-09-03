@@ -8,9 +8,7 @@ import lombok.Data;
 public class UsuarioDTO { @NotEmpty(message = "{usuario.documento.empty}")
 	private String documento;
 	private String nombrecompleto;
-	private LocalDateTime fechaNacimiento;
 	@NotEmpty(message = "usuario.documento.password")
 	private String password;
 	private Boolean estado;
-
 }
