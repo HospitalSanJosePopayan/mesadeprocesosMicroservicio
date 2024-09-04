@@ -3,6 +3,7 @@ package husjp.api.mesaprocesos.controllers;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import husjp.api.mesaprocesos.service.dto.UsuarioProcesobodyDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +42,7 @@ public class UsuarioProcesosController {
     }
     @Operation(summary = "Asignar un subproceso a un usuario especifico")
     @PostMapping
-    public UsuarioProcesoDTO crearUsuarioSubProceso(@RequestBody UsuarioProcesoDTO usuarioProcesoDTO) {
+    public UsuarioProcesoDTO crearUsuarioSubProceso(@RequestBody UsuarioProcesobodyDTO usuarioProcesoDTO) {
         return usuarioProcesoService.crearUsuarioProceso(usuarioProcesoDTO);
 
     }

@@ -8,6 +8,7 @@ import husjp.api.mesaprocesos.entity.Proceso;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
 import husjp.api.mesaprocesos.repository.ProcesoRepository;
+import husjp.api.mesaprocesos.service.dto.UsuarioProcesobodyDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,6 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
-
 	private UsuarioProcesoRepository usuarioProcesoRepository;
     private SubProcesoRepository subProcesoRepository;
     private ProcesoRepository procesoRepository;
@@ -57,7 +57,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                 })
                 .collect(Collectors.toList());
     }
-
     @Override
     public List<UsuarioProcesoDTO> obtenerprocesosPorUsuario(String documentoUsuario) {
         Optional<Usuario> usuario = usuarioRespository.findByDocumento(documentoUsuario);
@@ -80,32 +79,26 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                 dto.setEnlace(up.getEnlace());
                 return dto;
             }).collect(Collectors.toList());
-
-
         }
         throw new EntidadNoExisteException("El Usuario No se encuentra");
 
     }
     @Override
-    public UsuarioProcesoDTO crearUsuarioProceso(UsuarioProcesoDTO usuarioProcesoDTO) {
-
-        Optional<Proceso> procesoOpt = procesoRepository.findById(usuarioProcesoDTO.getIdProceso());
+    public UsuarioProcesoDTO crearUsuarioProceso(UsuarioProcesobodyDTO usuarioProcesobodyDTO) {
+        Optional<Proceso> procesoOpt = procesoRepository.findById(usuarioProcesobodyDTO.getIdProceso());
         if(!procesoOpt.isPresent()){
             throw  new EntidadNoExisteException("No se encontro el Proceso ");
         }
-
-        Optional<SubProceso> subProcesoOpt = subProcesoRepository.findById(usuarioProcesoDTO.getIdsubProceso());
+        Optional<SubProceso> subProcesoOpt = subProcesoRepository.findById(usuarioProcesobodyDTO.getIdsubProceso());
         if (!subProcesoOpt.isPresent()) {
             throw new EntidadNoExisteException("No se encontro el subproceso");
         }
-
         // Buscar el usuario por su documento en lugar de por ID
-        Optional<Usuario> usuarioOpt = usuarioRespository.findByDocumento(usuarioProcesoDTO.getIdusuario());
+        Optional<Usuario> usuarioOpt = usuarioRespository.findByDocumento(usuarioProcesobodyDTO.getDocumento());
         if (!usuarioOpt.isPresent()) {
             throw new EntidadNoExisteException("No se encontro el Usuario");
         }
-
-        UsuarioProceso usuarioSubProceso = modelMapper.map(usuarioProcesoDTO, UsuarioProceso.class);
+        UsuarioProceso usuarioSubProceso = modelMapper.map(usuarioProcesobodyDTO, UsuarioProceso.class);
         // Asignar entidades existentes
         usuarioSubProceso.setSubProceso(subProcesoOpt.get());
         usuarioSubProceso.setUsuario(usuarioOpt.get());
@@ -115,7 +108,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         // Devolver DTO guardado
         return modelMapper.map(savedUsuarioSubProceso, UsuarioProcesoDTO.class);
     }
-
     @Override
     public UsuarioProcesoDTO actualizarUsuarioProcesoFecha(Integer id, LocalDateTime nuevaFechaFin) {
         Optional<UsuarioProceso> usuOptional = usuarioProcesoRepository.findById(id);
@@ -138,7 +130,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             throw new EntidadNoExisteException("No se encontro el usuarioproceso");
         }
     }
-   
 
     @Override
     public UsuarioProcesoDTO actualizarUsuarioprocesoEstado(Integer idsubproceso, String enlace) {
@@ -153,8 +144,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             throw new EntidadNoExisteException("No se encontro el usuarioproceso ");
         }
     }
-
-
     @Scheduled(fixedRate = 86400000)
    public void actualizarEstadosAutomáticamente() {
         List<UsuarioProceso> procesos = usuarioProcesoRepository.findAll();
@@ -167,7 +156,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             }
         });
     }
-   
     @Override
     public void eliminarUsuarioProceso(Integer id) {
        Optional <UsuarioProceso> usuOptional = usuarioProcesoRepository.findById(id);
@@ -175,10 +163,8 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
          usuarioProcesoRepository.deleteById(id);
        }else{
         throw new  EntidadNoExisteException ("UsuarioProceso no encontrado.");
-       } 
-
+       }
     }
-
     @Override
     public List<UsuarioProcesoDTO> obtenerUsuarioProcesoArea(Integer idArea) {
         if (idArea == null || idArea <= 0) {
@@ -208,7 +194,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                         usuarioProcesoDTO.setFechaInicio(usuarioProceso.getFechaInicio());
                         usuarioProcesoDTO.setFechaFin(usuarioProceso.getFechaFin());
                         usuarioProcesoDTO.setEstado(usuarioProceso.getEstado());
-
                         response.add(usuarioProcesoDTO);
                     }
                 }
@@ -216,7 +201,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         }
         return response;
     }
-
     @Override
     public UsuarioProcesoDTO transferirSubprocesoAUsuario(Integer idUsuarioProceso, String nuevoUsuarioId) {
         Optional<UsuarioProceso> usuarioProcesoOpt = usuarioProcesoRepository.findById(idUsuarioProceso);
