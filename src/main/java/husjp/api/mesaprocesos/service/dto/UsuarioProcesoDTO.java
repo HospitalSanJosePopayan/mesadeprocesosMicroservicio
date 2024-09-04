@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 public class UsuarioProcesoDTO {
-    
+    // eliminar dtos atributos
     private Integer id;
     private Integer estado;
     private LocalDateTime fechaInicio;
