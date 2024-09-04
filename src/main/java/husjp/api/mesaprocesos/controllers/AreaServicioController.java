@@ -27,8 +27,8 @@ public class AreaServicioController {
         return new ResponseEntity<>(areaServicioService.obtenerAreasServicio(), HttpStatus.OK);
     }
     @Operation(summary = "Listar Usuarios  por Area")
-    @GetMapping("/{idArea}")
-    public  ResponseEntity<List<UsuarioDTO>> ListarUsuarios(@PathVariable(name = "idArea")Integer idArea){
+    @GetMapping("/usuarios/{idArea}")
+    public  ResponseEntity<List<UsuarioDTO>> ListarUsuariosPorIdArea(@PathVariable(name = "idArea")Integer idArea){
        return  new ResponseEntity<>(areaServicioService.buscarUsuarioporArea(idArea),HttpStatus.OK);
 
     }
