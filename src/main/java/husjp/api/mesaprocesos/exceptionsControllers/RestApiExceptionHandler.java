@@ -41,6 +41,12 @@ public class RestApiExceptionHandler {
         final Error error = ErrorUtils.crearError(CodigoError.SIN_ASOCIACIONES.getCodigo(), String.format("%s, %s", CodigoError.SIN_ASOCIACIONES.getLlaveMensaje(), ex.getMessage()), HttpStatus.NOT_FOUND.value()).setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+    // crea la excepcion Fecha fuera de rango
+    @ExceptionHandler(FechaFueraRango.class)
+    public ResponseEntity<Error> handleGenericException(final HttpServletRequest req, final FechaFueraRango ex, final Locale locale){
+        final Error error = ErrorUtils.crearError(CodigoError.FECHA_FUERA_RANGO.getCodigo(), String.format("%s, %s", CodigoError.FECHA_FUERA_RANGO.getLlaveMensaje(), ex.getMessage()), HttpStatus.NOT_FOUND.value()).setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
     //este metodo se ejecuta automaticamente con el valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
