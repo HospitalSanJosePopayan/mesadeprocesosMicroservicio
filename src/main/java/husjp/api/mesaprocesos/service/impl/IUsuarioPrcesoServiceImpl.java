@@ -1,5 +1,6 @@
 package husjp.api.mesaprocesos.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import husjp.api.mesaprocesos.entity.Proceso;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
+import husjp.api.mesaprocesos.exceptionsControllers.exceptions.FechaFueraRango;
 import husjp.api.mesaprocesos.repository.ProcesoRepository;
 import husjp.api.mesaprocesos.service.dto.UsuarioProcesobodyDTO;
 import org.modelmapper.ModelMapper;
@@ -85,6 +87,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
     }
     @Override
     public UsuarioProcesoDTO crearUsuarioProceso(UsuarioProcesobodyDTO usuarioProcesobodyDTO) {
+        LocalDateTime hoy = LocalDateTime.now();
         Optional<Proceso> procesoOpt = procesoRepository.findById(usuarioProcesobodyDTO.getIdProceso());
         if(!procesoOpt.isPresent()){
             throw  new EntidadNoExisteException("No se encontro el Proceso ");
@@ -100,6 +103,11 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         }
         UsuarioProceso usuarioSubProceso = modelMapper.map(usuarioProcesobodyDTO, UsuarioProceso.class);
         // Asignar entidades existentes
+        LocalDate FechaInicio = usuarioSubProceso.getFechaInicio().toLocalDate();
+        LocalDate FechaFin = usuarioSubProceso.getFechaFin().toLocalDate();
+        if(usuarioSubProceso.getFechaInicio().isBefore(hoy) || usuarioSubProceso.getFechaFin().isBefore(usuarioSubProceso.getFechaInicio()) || FechaInicio.isEqual(FechaFin)){
+            throw new FechaFueraRango("Las fechas estan fuera de rango");
+        }
         usuarioSubProceso.setSubProceso(subProcesoOpt.get());
         usuarioSubProceso.setUsuario(usuarioOpt.get());
         // Establecer estado inicial
@@ -221,5 +229,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         // Convertir la entidad actualizada a DTO y devolverla
         return modelMapper.map(usuarioProcesoActualizado, UsuarioProcesoDTO.class);
     }
+
+
 
 }

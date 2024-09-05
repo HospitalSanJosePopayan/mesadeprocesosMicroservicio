@@ -15,5 +15,7 @@ public interface IUsuarioProcesoService {
 	   void eliminarUsuarioProceso(Integer id); 
 	   public List<UsuarioProcesoDTO> obtenerUsuarioProcesoArea(Integer idArea);
 	   public UsuarioProcesoDTO transferirSubprocesoAUsuario(Integer idUsuarioProceso, String nuevoUsuarioId);
+	   //public List<UsuarioProcesoDTO> GenerarReportePorArea(Integer idArea);
+
 
 }

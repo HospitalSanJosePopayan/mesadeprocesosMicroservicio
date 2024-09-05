@@ -21,7 +21,8 @@ public enum CodigoError {
     SIN_CREDENCIALES("GC-0012","No se encontraron las credenciales para acceder a esta funcion. "),
     TOKEN_EXPIRO("GC-0012","EL TOKEN HA EXPIRADO"),
     INCUMPLE_CONDICIONES("GC-0013","INCUMPLE CONDICIÓN"),
-    SIN_ASOCIACIONES("GC-0014","No tiene Asignaciones");
+    SIN_ASOCIACIONES("GC-0014","No tiene Asignaciones"),
+    FECHA_FUERA_RANGO("GC-0015", "fecha No se encuentra entre los limites establecidos ");
 
     private final String codigo;
     private final String llaveMensaje;
