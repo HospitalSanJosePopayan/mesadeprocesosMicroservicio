@@ -48,16 +48,19 @@ public class SubProcesoImpl implements ISubProcesoService {
         Optional<Proceso> procesoOpt = procesosRepository.findById(idProceso);
         if (procesoOpt.isPresent()) {
             Proceso proceso = procesoOpt.get();
-            return proceso.getSubprocesos().stream()
-                    .map(subproceso -> {
-                        SubProcesoDTO dto = new SubProcesoDTO();
-                        dto.setIdSubProceso(subproceso.getIdSubProceso());
-                        dto.setNombreSubproceso(subproceso.getNombreSubproceso());
-                        dto.setDescripcion(subproceso.getDescripcion());
-                        dto.setIdproceso(proceso.getIdproceso());
-                        return dto;
-                    })
-                    .collect(Collectors.toList());
+            if(!procesoOpt.get().getSubprocesos().isEmpty()) {
+                return proceso.getSubprocesos().stream()
+                        .map(subproceso -> {
+                            SubProcesoDTO dto = new SubProcesoDTO();
+                            dto.setIdSubProceso(subproceso.getIdSubProceso());
+                            dto.setNombreSubproceso(subproceso.getNombreSubproceso());
+                            dto.setDescripcion(subproceso.getDescripcion());
+                            dto.setIdproceso(proceso.getIdproceso());
+                            return dto;
+                        })
+                        .collect(Collectors.toList());
+            }
+            throw  new EntidadSinAsignaciones("No existen subprocesos para este proceso");
         }
         throw new EntidadNoExisteException("No existen Procesos con este ID");
     }
