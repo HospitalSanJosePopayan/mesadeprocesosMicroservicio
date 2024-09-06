@@ -87,7 +87,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
     }
     @Override
     public UsuarioProcesoDTO crearUsuarioProceso(UsuarioProcesobodyDTO usuarioProcesobodyDTO) {
-        LocalDateTime hoy = LocalDateTime.now();
         Optional<Proceso> procesoOpt = procesoRepository.findById(usuarioProcesobodyDTO.getIdProceso());
         if(!procesoOpt.isPresent()){
             throw  new EntidadNoExisteException("No se encontro el Proceso ");
@@ -105,7 +104,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         // Asignar entidades existentes
         LocalDate FechaInicio = usuarioSubProceso.getFechaInicio().toLocalDate();
         LocalDate FechaFin = usuarioSubProceso.getFechaFin().toLocalDate();
-        if(usuarioSubProceso.getFechaInicio().isBefore(hoy) || usuarioSubProceso.getFechaFin().isBefore(usuarioSubProceso.getFechaInicio()) || FechaInicio.isEqual(FechaFin)){
+        if(usuarioSubProceso.getFechaInicio().isBefore(LocalDateTime.now()) || usuarioSubProceso.getFechaFin().isBefore(usuarioSubProceso.getFechaInicio()) || FechaInicio.isEqual(FechaFin)){
             throw new FechaFueraRango("Las fechas estan fuera de rango");
         }
         usuarioSubProceso.setSubProceso(subProcesoOpt.get());
@@ -121,11 +120,10 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         Optional<UsuarioProceso> usuOptional = usuarioProcesoRepository.findById(id);
         if (usuOptional.isPresent()) {
             UsuarioProceso usuarioProceso = usuOptional.get();
-            LocalDateTime hoy = LocalDateTime.now();
             // Actualizar la fecha fin
             usuarioProceso.setFechaFin(nuevaFechaFin);
             // Si la nueva fecha fin es superior a la fecha actual, cambiar el estado a 1 (en curso)
-            if (nuevaFechaFin.isAfter(hoy)) {
+            if (nuevaFechaFin.isAfter(LocalDateTime.now())) {
                 usuarioProceso.setEstado(1);
             } else {
                 // Si la nueva fecha fin no es superior a la fecha actual, mantén el estado como atrasado (3)
@@ -152,17 +150,29 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             throw new EntidadNoExisteException("No se encontro el usuarioproceso ");
         }
     }
-    @Scheduled(fixedRate = 86400000)
+    @Scheduled(cron = "0 0 0 6 * ?")
    public void actualizarEstadosAutomáticamente() {
         List<UsuarioProceso> procesos = usuarioProcesoRepository.findAll();
-        LocalDateTime hoy = LocalDateTime.now();
-        System.out.println("la fecha es "+ hoy);
+        System.out.println("la fecha es "+ LocalDateTime.now());
         procesos.forEach(proceso -> {
-            if (proceso.getEstado() == 1 && proceso.getFechaFin().isBefore(hoy)) {
+            if (proceso.getEstado() == 1 && proceso.getFechaFin().isBefore(LocalDateTime.now())) {
                 proceso.setEstado(3); // Estado "atrasado"
                 usuarioProcesoRepository.save(proceso);
             }
         });
+    }
+    @Scheduled(cron= "0 0 0 6 * ?")
+    public  void ElimiarUsuariosProcesosMensuales(){
+      LocalDateTime hoy = LocalDateTime.now();
+      List<Integer> estados = List.of(2,3);
+      List<UsuarioProceso>usuarioProcesosEliminar= usuarioProcesoRepository.findByEstadoAndFechaFin(estados,hoy);
+      if(!usuarioProcesosEliminar.isEmpty()){
+          System.out.println("Se Eliminaron Usuarios procesos ");
+          usuarioProcesosEliminar.forEach(usuarioProceso -> {
+              System.out.println("se elimino la asignacion "+usuarioProceso.getUsuario()+"con id "+ usuarioProceso.getId());
+          });
+          usuarioProcesoRepository.deleteAll(usuarioProcesosEliminar);
+      }
     }
     @Override
     public void eliminarUsuarioProceso(Integer id) {
