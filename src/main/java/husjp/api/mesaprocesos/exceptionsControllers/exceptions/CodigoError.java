@@ -22,7 +22,8 @@ public enum CodigoError {
     TOKEN_EXPIRO("GC-0012","EL TOKEN HA EXPIRADO"),
     INCUMPLE_CONDICIONES("GC-0013","INCUMPLE CONDICIÓN"),
     SIN_ASOCIACIONES("GC-0014","No tiene Asignaciones"),
-    FECHA_FUERA_RANGO("GC-0015", "fecha No se encuentra entre los limites establecidos ");
+    FECHA_FUERA_RANGO("GC-0015", "fecha No se encuentra entre los limites establecidos "),
+    OPERACION_NO_PERMITIDA("GC-0016", " No se logro realizar esta asignacion ");
 
     private final String codigo;
     private final String llaveMensaje;
