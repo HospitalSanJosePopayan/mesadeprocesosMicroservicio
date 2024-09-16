@@ -11,7 +11,8 @@ import lombok.Data;
 public class SubProceso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idSubProceso;
+    @Column(name = "id_sub_proceso")
+    private Integer id;
     private String nombreSubproceso;
     private String descripcion;
     @ManyToOne

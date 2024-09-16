@@ -11,7 +11,7 @@ public interface IUsuarioProcesoService {
 	   List<UsuarioProcesoDTO> obtenerprocesosPorUsuario(String documento);
 	   UsuarioProcesoDTO crearUsuarioProceso(UsuarioProcesobodyDTO usuarioProcesobodyDTODTO);
 	   UsuarioProcesoDTO actualizarUsuarioProcesoFecha(Integer id, LocalDateTime nuevaFechaFin);
-	   UsuarioProcesoDTO actualizarUsuarioprocesoEstado(Integer idsubproceso, String enlace);
+	   UsuarioProcesoDTO actualizarUsuarioprocesoEstado(Integer id, String enlace);
 	   void eliminarUsuarioProceso(Integer id); 
 	   public List<UsuarioProcesoDTO> obtenerUsuarioProcesoArea(Integer idArea);
 	   public UsuarioProcesoDTO transferirSubprocesoAUsuario(Integer idUsuarioProceso, String nuevoUsuarioId);

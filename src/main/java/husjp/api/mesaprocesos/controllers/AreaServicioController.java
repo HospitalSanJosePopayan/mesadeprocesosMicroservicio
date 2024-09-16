@@ -20,16 +20,15 @@ import lombok.AllArgsConstructor;
 public class AreaServicioController {
 
     private IAreaServicioService areaServicioService;
-
     @Operation(summary = "Listar todas las áreas de servicio Obtiene una lista de todas las áreas de servicio disponibles.")
     @GetMapping
     public ResponseEntity<List<AreaServicioDTO>> ListarAreasServicio() {
         return new ResponseEntity<>(areaServicioService.obtenerAreasServicio(), HttpStatus.OK);
     }
     @Operation(summary = "Listar Usuarios  por Area")
-    @GetMapping("/usuarios/{idArea}")
-    public  ResponseEntity<List<UsuarioDTO>> ListarUsuariosPorIdArea(@PathVariable(name = "idArea")Integer idArea){
-       return  new ResponseEntity<>(areaServicioService.buscarUsuarioporArea(idArea),HttpStatus.OK);
+    @GetMapping("/usuarios/{id}")
+    public  ResponseEntity<List<UsuarioDTO>> ListarUsuariosPorIdArea(@PathVariable(name = "id")Integer id){
+       return  new ResponseEntity<>(areaServicioService.buscarUsuarioporArea(id),HttpStatus.OK);
 
     }
 

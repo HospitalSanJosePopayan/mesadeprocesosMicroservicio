@@ -8,6 +8,6 @@ import husjp.api.mesaprocesos.service.dto.UsuarioDTO;
 
 public interface IAreaServicioService {
     List<AreaServicioDTO> obtenerAreasServicio();
-    List <UsuarioDTO>buscarUsuarioporArea(Integer IdArea);
+    List <UsuarioDTO>buscarUsuarioporArea(Integer id);
     
 }
