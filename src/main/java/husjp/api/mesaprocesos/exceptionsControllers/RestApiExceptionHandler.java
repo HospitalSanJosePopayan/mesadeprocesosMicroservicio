@@ -47,6 +47,12 @@ public class RestApiExceptionHandler {
         final Error error = ErrorUtils.crearError(CodigoError.FECHA_FUERA_RANGO.getCodigo(), String.format("%s, %s", CodigoError.FECHA_FUERA_RANGO.getLlaveMensaje(), ex.getMessage()), HttpStatus.NOT_FOUND.value()).setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+    // crea la excepcion Operacion No permitda
+    @ExceptionHandler(OperacionNoPermitida.class)
+    public ResponseEntity<Error> handleGenericException(final HttpServletRequest req, final OperacionNoPermitida ex, final Locale locale){
+        final Error error = ErrorUtils.crearError(CodigoError.OPERACION_NO_PERMITIDA.getCodigo(), String.format("%s, %s", CodigoError.OPERACION_NO_PERMITIDA.getLlaveMensaje(), ex.getMessage()), HttpStatus.NOT_FOUND.value()).setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
     //este metodo se ejecuta automaticamente con el valid
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -9,6 +9,7 @@ import husjp.api.mesaprocesos.entity.Proceso;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.FechaFueraRango;
+import husjp.api.mesaprocesos.exceptionsControllers.exceptions.OperacionNoPermitida;
 import husjp.api.mesaprocesos.repository.ProcesoRepository;
 import husjp.api.mesaprocesos.service.dto.UsuarioProcesobodyDTO;
 import org.modelmapper.ModelMapper;
@@ -99,6 +100,21 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         Optional<Usuario> usuarioOpt = usuarioRespository.findByDocumento(usuarioProcesobodyDTO.getDocumento());
         if (!usuarioOpt.isPresent()) {
             throw new EntidadNoExisteException("No se encontro el Usuario");
+        }
+        Optional<UsuarioProceso> existenteUsuarioProceso = usuarioProcesoRepository
+                .findUsuarioProcesoEnCurso(
+                        usuarioOpt.get().getIdPersona(),
+                        subProcesoOpt.get().getIdSubProceso()
+
+                );
+        if (existenteUsuarioProceso.isPresent())
+        {
+            if(existenteUsuarioProceso.get().getEstado()==1){
+                throw new OperacionNoPermitida("El usuario ya tiene este proceso en curso.");
+            }
+            if(existenteUsuarioProceso.get().getEstado()==3) {
+                throw new OperacionNoPermitida("El usuario tiene este mismo  proceo Atrasado.");
+            }
         }
         UsuarioProceso usuarioSubProceso = modelMapper.map(usuarioProcesobodyDTO, UsuarioProceso.class);
         // Asignar entidades existentes
