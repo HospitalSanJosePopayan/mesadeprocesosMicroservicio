@@ -248,14 +248,20 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         // Actualizar el UsuarioProceso con el nuevo usuario
         UsuarioProceso usuarioProceso = usuarioProcesoOpt.get();
         usuarioProceso.setUsuario(nuevoUsuarioOpt.get());
-        
         // Guardar el cambio en la base de datos
         UsuarioProceso usuarioProcesoActualizado = usuarioProcesoRepository.save(usuarioProceso);
-
         // Convertir la entidad actualizada a DTO y devolverla
-        return modelMapper.map(usuarioProcesoActualizado, UsuarioProcesoDTO.class);
+        UsuarioProcesoDTO usuarioProcesoDTO = new UsuarioProcesoDTO();
+        usuarioProcesoDTO.setId(usuarioProcesoActualizado.getId());
+        usuarioProcesoDTO.setEstado(usuarioProcesoActualizado.getEstado());
+        usuarioProcesoDTO.setFechaInicio(usuarioProcesoActualizado.getFechaInicio());
+        usuarioProcesoDTO.setFechaFin(usuarioProcesoActualizado.getFechaFin());
+        usuarioProcesoDTO.setIdusuario(usuarioProcesoActualizado.getUsuario().getDocumento());
+        usuarioProcesoDTO.setIdsubProceso(usuarioProcesoActualizado.getSubProceso().getId());
+        usuarioProcesoDTO.setIdProceso(usuarioProcesoActualizado.getSubProceso().getProceso().getId());
+        usuarioProcesoDTO.setDescripcionSubproceso(usuarioProcesoActualizado.getSubProceso().getDescripcion());
+        usuarioProcesoDTO.setNombreUsuario(usuarioProcesoActualizado.getUsuario().getNombreCompleto());
+        usuarioProcesoDTO.setEnlace(usuarioProcesoActualizado.getEnlace());
+        return  usuarioProcesoDTO;
     }
-
-
-
 }
