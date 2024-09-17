@@ -228,6 +228,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                         usuarioProcesoDTO.setFechaInicio(usuarioProceso.getFechaInicio());
                         usuarioProcesoDTO.setFechaFin(usuarioProceso.getFechaFin());
                         usuarioProcesoDTO.setEstado(usuarioProceso.getEstado());
+                        usuarioProcesoDTO.setEnlace(usuarioProceso.getEnlace());
                         response.add(usuarioProcesoDTO);
                     }
                 }
