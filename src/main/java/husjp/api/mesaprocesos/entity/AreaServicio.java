@@ -12,7 +12,8 @@ public class AreaServicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idarea;
+    @Column(name = "idarea")
+    private Integer id;
     private String nombre;
     private String tipo;
     @ManyToMany(mappedBy = "areaServicios")

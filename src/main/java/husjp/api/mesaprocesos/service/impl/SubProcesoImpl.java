@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
+import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadYaExiste;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -34,10 +35,10 @@ public class SubProcesoImpl implements ISubProcesoService {
         List<SubProcesoDTO> subProcesoDTOS = new ArrayList<>();
         for (SubProceso subProceso : subProcesos) {
             SubProcesoDTO subProcesoDTO = new SubProcesoDTO();
-            subProcesoDTO.setIdSubProceso(subProceso.getIdSubProceso());
+            subProcesoDTO.setId(subProceso.getId());
             subProcesoDTO.setNombreSubproceso(subProceso.getNombreSubproceso());
             subProcesoDTO.setDescripcion(subProceso.getDescripcion());
-            subProcesoDTO.setIdproceso(subProceso.getProceso().getIdproceso());
+            subProcesoDTO.setIdproceso(subProceso.getProceso().getId());
             subProcesoDTOS.add(subProcesoDTO);
         }
         return subProcesoDTOS;
@@ -52,10 +53,10 @@ public class SubProcesoImpl implements ISubProcesoService {
                 return proceso.getSubprocesos().stream()
                         .map(subproceso -> {
                             SubProcesoDTO dto = new SubProcesoDTO();
-                            dto.setIdSubProceso(subproceso.getIdSubProceso());
+                            dto.setId(subproceso.getId());
                             dto.setNombreSubproceso(subproceso.getNombreSubproceso());
                             dto.setDescripcion(subproceso.getDescripcion());
-                            dto.setIdproceso(proceso.getIdproceso());
+                            dto.setIdproceso(proceso.getId());
                             return dto;
                         })
                         .collect(Collectors.toList());
@@ -67,36 +68,60 @@ public class SubProcesoImpl implements ISubProcesoService {
 
     @Override
     public SubProcesoDTO crearSubProceso(SubProcesoDTO subProcesoDTO) {
+        boolean existeSubproceso = subProcesoRepository.existsByNombreSubprocesoAndProcesoId(subProcesoDTO.getNombreSubproceso(),subProcesoDTO.getIdproceso());
+        if(existeSubproceso){
+            throw new EntidadYaExiste("El Nombre de este subproceso ya existe");
+        }
         SubProceso subProceso = new SubProceso();
         subProceso.setNombreSubproceso(subProcesoDTO.getNombreSubproceso());
         subProceso.setDescripcion(subProcesoDTO.getDescripcion());
         Proceso proceso = procesosRepository.findById(subProcesoDTO.getIdproceso())
                 .orElseThrow(() -> new EntidadNoExisteException("Proceso no encontrado"));
         subProceso.setProceso(proceso);
+        List<SubProceso> listasubprocesos = subProcesoRepository.findAll();
         SubProceso savedSubProceso = subProcesoRepository.save(subProceso);
         SubProcesoDTO savedSubProcesoDTO = new SubProcesoDTO();
-        savedSubProcesoDTO.setIdSubProceso(savedSubProceso.getIdSubProceso());
+        savedSubProcesoDTO.setId(savedSubProceso.getId());
         savedSubProcesoDTO.setNombreSubproceso(savedSubProceso.getNombreSubproceso());
         savedSubProcesoDTO.setDescripcion(savedSubProceso.getDescripcion());
-        savedSubProcesoDTO.setIdproceso(savedSubProceso.getProceso().getIdproceso());
+        savedSubProcesoDTO.setIdproceso(savedSubProceso.getProceso().getId());
         return savedSubProcesoDTO;
     }
     @Override
     public SubProcesoDTO actualizarSubproceso(Integer id, SubProcesoDTO subProcesoDTO) {
+        // Buscar el SubProceso por su ID
         Optional<SubProceso> optionalSubProceso = subProcesoRepository.findById(id);
+
         if (optionalSubProceso.isPresent()) {
-             SubProceso subProceso = optionalSubProceso.get();
+            SubProceso subProceso = optionalSubProceso.get();
+            // Verificar si el nombre o el proceso han cambiado
+            boolean nombreCambio = !subProceso.getNombreSubproceso().equalsIgnoreCase(subProcesoDTO.getNombreSubproceso());
+            boolean procesoCambio = !subProceso.getProceso().getId().equals(subProcesoDTO.getIdproceso());
+            // Si el nombre o el proceso cambiaron, validar que el nuevo nombre no exista para el proceso
+            if (nombreCambio || procesoCambio) {
+                boolean existeSubproceso = subProcesoRepository.existsByNombreSubprocesoAndProcesoId(
+                        subProcesoDTO.getNombreSubproceso(), subProcesoDTO.getIdproceso());
+                if (existeSubproceso) {
+                    throw new EntidadYaExiste("El nombre de este subproceso ya existe para el proceso con ID: " + subProcesoDTO.getIdproceso());
+                }
+            }
+            // Actualizar los valores del subproceso
             subProceso.setNombreSubproceso(subProcesoDTO.getNombreSubproceso());
             subProceso.setDescripcion(subProcesoDTO.getDescripcion());
-            Proceso proceso = procesosRepository.findById(subProcesoDTO.getIdproceso())
-                    .orElseThrow(() -> new EntidadNoExisteException("Proceso no encontrado"));
-            subProceso.setProceso(proceso);
+            // Verificar si el proceso ha cambiado
+            if (procesoCambio) {
+                Proceso proceso = procesosRepository.findById(subProcesoDTO.getIdproceso())
+                        .orElseThrow(() -> new EntidadNoExisteException("Proceso no encontrado"));
+                subProceso.setProceso(proceso);
+            }
             SubProceso updatedSubProceso = subProcesoRepository.save(subProceso);
             SubProcesoDTO response = modelMapper.map(updatedSubProceso, SubProcesoDTO.class);
-            response.setIdproceso(updatedSubProceso.getProceso().getIdproceso());
+            response.setIdproceso(updatedSubProceso.getProceso().getId());
             return response;
         } else {
             throw new EntidadNoExisteException("SubProceso no encontrado");
         }
     }
+
+
 }

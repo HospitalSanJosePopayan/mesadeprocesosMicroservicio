@@ -31,18 +31,18 @@ public class SecurityConfig {
                         authorizeRequests.requestMatchers(AUTH_WHITLIST).permitAll();
 //                        Area servicio
                         authorizeRequests.requestMatchers(HttpMethod.GET,"AreaServicio").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
-                        authorizeRequests.requestMatchers(HttpMethod.GET,"AreaServicio/{idArea}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
+                        authorizeRequests.requestMatchers(HttpMethod.GET,"AreaServicio/{id}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
 
                       // Procesos
                         authorizeRequests.requestMatchers(HttpMethod.GET,"procesos").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
                         authorizeRequests.requestMatchers(HttpMethod.POST,"procesos").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
-                        authorizeRequests.requestMatchers(HttpMethod.PUT,"procesos/{idproceso}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
+                        authorizeRequests.requestMatchers(HttpMethod.PUT,"procesos/{id}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
                         authorizeRequests.requestMatchers(HttpMethod.GET,"procesos/{idarea}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
                         //SUBPROCESOS
                         authorizeRequests.requestMatchers(HttpMethod.GET,"subprocesos").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
                         authorizeRequests.requestMatchers(HttpMethod.POST,"subprocesos").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
                         authorizeRequests.requestMatchers(HttpMethod.PUT,"subprocesos/{id}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
-                        authorizeRequests.requestMatchers(HttpMethod.GET,"subprocesos/{id}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
+                        authorizeRequests.requestMatchers(HttpMethod.GET,"subprocesos/{idproceso}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
                         //UsuariosProcesos;
                         authorizeRequests.requestMatchers(HttpMethod.GET,"usuarioprocesos").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
                         authorizeRequests.requestMatchers(HttpMethod.GET,"usuarioprocesos/{documento}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
