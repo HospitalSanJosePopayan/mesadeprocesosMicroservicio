@@ -8,6 +8,7 @@ import husjp.api.mesaprocesos.entity.AreaServicio;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadYaExiste;
+import husjp.api.mesaprocesos.exceptionsControllers.exceptions.OperacionNoPermitida;
 import husjp.api.mesaprocesos.repository.AreaServicioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,53 +26,95 @@ public class ProcesoServiceImpl implements IProcesoService {
 	private final ModelMapper modelMapper;
 	 @Override
 	  public List<ProcesoDTO> obtenerProcesos() {
-	    List<ProcesoDTO> procesoDTOs = procesosRepository.findAll().stream()
-	        .map(proceso -> modelMapper.map(proceso, ProcesoDTO.class))
-	        .collect(Collectors.toList());
-		if(procesoDTOs.isEmpty()) {
-		 throw  new EntidadNoExisteException("No existen Procesos Registrados ");
-		}
-	    return procesoDTOs;
+		 List<Proceso> procesos = procesosRepository.findAll();
+		 if (procesos.isEmpty()) {
+			 throw new EntidadNoExisteException("No existen Procesos Registrados");
+		 }
+		 List<ProcesoDTO> procesoDTOs = procesos.stream()
+				 .map(proceso -> {
+					 ProcesoDTO procesoDTO = new ProcesoDTO();
+					 procesoDTO.setId(proceso.getId());
+					 procesoDTO.setNombre(proceso.getNombre());
+					 procesoDTO.setDescripcion(proceso.getDescripcion());
+					 procesoDTO.setIdarea(proceso.getIdarea().getId());
+					 return procesoDTO;
+				 })
+				 .collect(Collectors.toList());
+
+		 return procesoDTOs;
 	  }
 	@Override
 	public List<ProcesoDTO> obtenerProcesosArea(Integer idArea) {
-	   List<Proceso> obtenerprocesos=  procesosRepository.findByIdArea(idArea);
-	   if(obtenerprocesos.isEmpty()){
-		   throw  new EntidadSinAsignaciones("No existen procesos asignados para esta Area");
-	   }
-	   return obtenerprocesos.stream()
-	   .map(proceso -> modelMapper.map(proceso, ProcesoDTO.class))
-	   .collect(Collectors.toList());
+		List<Proceso> obtenerprocesos = procesosRepository.findByIdArea(idArea);
+		if (obtenerprocesos.isEmpty()) {
+			throw new EntidadSinAsignaciones("No existen procesos asignados para esta Area");
+		}
+		return obtenerprocesos.stream()
+				.map(proceso -> {
+					ProcesoDTO procesoDTO = new ProcesoDTO();
+					procesoDTO.setId(proceso.getId());
+					procesoDTO.setNombre(proceso.getNombre());
+					procesoDTO.setDescripcion(proceso.getDescripcion());
+					procesoDTO.setIdarea(proceso.getIdarea().getId());
+					return procesoDTO;
+				})
+				.collect(Collectors.toList());
 	}
-	  @Override
-	  public ProcesoDTO crearProceso(ProcesoDTO procesoDTO) {
-		   Optional<Proceso> procesoopt= procesosRepository.findById(procesoDTO.getIdproceso());
-		 if(procesoopt.isPresent()){
-			 throw  new EntidadYaExiste("El Id del proceso ya se encuentra Registrado");
+	@Override
+	public ProcesoDTO crearProceso(ProcesoDTO procesoDTO) {
+		 if(procesoDTO.getId()==0){
+			 throw new OperacionNoPermitida("La Id del proceso no puede ser cero");
 		 }
-		 Optional<AreaServicio> areaServicioOpt= areaServicioRepository.findById(procesoDTO.getIdarea());
+		Optional<Proceso> procesoopt = procesosRepository.findById(procesoDTO.getId());
+		if (procesoopt.isPresent()) {
+			throw new EntidadYaExiste("El Id del proceso ya se encuentra Registrado");
+		}
+		 boolean existeNombre=procesosRepository.existsByNombreProceso(procesoDTO.getNombre(),procesoDTO.getIdarea());
+		 if(existeNombre){
+			 throw  new EntidadYaExiste("El Nombre de este proceso ya se encuentra registrado ");
+		 }
 
-		 if(areaServicioOpt.isPresent()){
-	      Proceso proceso = modelMapper.map(procesoDTO, Proceso.class);
-	      Proceso savedProceso = procesosRepository.save(proceso);
-	      ProcesoDTO savedProcesoDTO = modelMapper.map(savedProceso, ProcesoDTO.class);
-	      savedProcesoDTO.setDescripcion(savedProceso.getIdarea().getNombre()); // Asignar el nombre del área al DTO
-	      return savedProcesoDTO;
-		 }
-		 throw  new EntidadNoExisteException("El Area de Servicio No se encuentra Registrada");
-	  }
-	  @Override
-	  public ProcesoDTO actualizarProceso(Integer id, ProcesoDTO procesoDTO) {
-	      Optional<Proceso> optionalProceso = procesosRepository.findById(id);
-	      if (optionalProceso.isPresent()) {
-	          Proceso proceso = optionalProceso.get();
-	          proceso.setNombre(procesoDTO.getNombre());
-	          proceso.setDescripcion(procesoDTO.getDescripcion());
-	          proceso.setIdarea(modelMapper.map(procesoDTO, Proceso.class).getIdarea());
-	          Proceso updatedProceso = procesosRepository.save(proceso);
-	          return modelMapper.map(updatedProceso, ProcesoDTO.class);
-	      } else {
-	          throw new  EntidadNoExisteException("No se encontro el proceso");
-	      }
-	  }
+		Optional<AreaServicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
+		if (areaServicioOpt.isPresent()) {
+			Proceso proceso = new Proceso();
+			proceso.setId(procesoDTO.getId());
+			proceso.setNombre(procesoDTO.getNombre());
+			proceso.setDescripcion(procesoDTO.getDescripcion());
+			proceso.setIdarea(areaServicioOpt.get());
+			Proceso savedProceso = procesosRepository.save(proceso);
+			ProcesoDTO savedProcesoDTO = new ProcesoDTO();
+			savedProcesoDTO.setId(savedProceso.getId());
+			savedProcesoDTO.setNombre(savedProceso.getNombre());
+			savedProcesoDTO.setDescripcion(savedProceso.getDescripcion());
+			savedProcesoDTO.setIdarea(savedProceso.getIdarea().getId());
+			return savedProcesoDTO;
+		}
+		throw new EntidadNoExisteException("El Area de Servicio No se encuentra Registrada");
+	}
+
+	@Override
+	public ProcesoDTO actualizarProceso(Integer id, ProcesoDTO procesoDTO) {
+		Optional<Proceso> optionalProceso = procesosRepository.findById(id);
+		if (optionalProceso.isPresent()) {
+			Proceso proceso = optionalProceso.get();
+			proceso.setNombre(procesoDTO.getNombre());
+			proceso.setDescripcion(procesoDTO.getDescripcion());
+			Optional<AreaServicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
+			if (areaServicioOpt.isPresent()) {
+				proceso.setIdarea(areaServicioOpt.get());
+			} else {
+				throw new EntidadNoExisteException("El Area de Servicio No se encuentra Registrada");
+			}
+			Proceso updatedProceso = procesosRepository.save(proceso);
+			ProcesoDTO updatedProcesoDTO = new ProcesoDTO();
+			updatedProcesoDTO.setId(updatedProceso.getId());
+			updatedProcesoDTO.setNombre(updatedProceso.getNombre());
+			updatedProcesoDTO.setDescripcion(updatedProceso.getDescripcion());
+			updatedProcesoDTO.setIdarea(updatedProceso.getIdarea().getId());
+			return updatedProcesoDTO;
+		} else {
+			throw new EntidadNoExisteException("No se encontro el proceso");
+		}
+	}
+
 }

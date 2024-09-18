@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProcesoDTO {
-	   private Integer idproceso;
+	   private Integer id;
 	    private String Nombre;
 	    private String descripcion;
 	    private Integer idarea;

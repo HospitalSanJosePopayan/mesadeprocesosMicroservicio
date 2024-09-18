@@ -43,7 +43,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                         throw new IllegalArgumentException("El Usuario o su documento es nulo o vacío en el proceso con ID: " + usuarioProceso.getId());
                     }
                     SubProceso subProceso = usuarioProceso.getSubProceso();
-                    if (subProceso == null || subProceso.getIdSubProceso() == null) {
+                    if (subProceso == null || subProceso.getId() == null) {
                         throw new IllegalArgumentException("El SubProceso o su ID es nulo en el proceso con ID: " + usuarioProceso.getId());
                     }
                     dto.setId(usuarioProceso.getId());
@@ -52,9 +52,9 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                     dto.setFechaFin(usuarioProceso.getFechaFin());
                     dto.setEnlace(usuarioProceso.getEnlace());
                     dto.setIdusuario(usuario.getDocumento());
-                    dto.setIdsubProceso(subProceso.getIdSubProceso());
+                    dto.setIdsubProceso(subProceso.getId());
                     dto.setDescripcionSubproceso(subProceso.getDescripcion());
-                    dto.setIdProceso(usuarioProceso.getSubProceso().getProceso().getIdproceso());
+                    dto.setIdProceso(usuarioProceso.getSubProceso().getProceso().getId());
                     dto.setNombreUsuario(usuarioProceso.getUsuario().getNombreCompleto());
                     return dto;
                 })
@@ -75,8 +75,8 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                 dto.setFechaInicio(up.getFechaInicio());
                 dto.setFechaFin(up.getFechaFin());
                 dto.setIdusuario(up.getUsuario().getDocumento());  // Este será el documento del usuario
-                dto.setIdsubProceso(up.getSubProceso().getIdSubProceso());
-                dto.setIdProceso(up.getSubProceso().getProceso().getIdproceso());
+                dto.setIdsubProceso(up.getSubProceso().getId());
+                dto.setIdProceso(up.getSubProceso().getProceso().getId());
                 dto.setDescripcionSubproceso(up.getSubProceso().getDescripcion());
                 dto.setNombreUsuario(up.getUsuario().getNombreCompleto());
                 dto.setEnlace(up.getEnlace());
@@ -104,7 +104,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         Optional<UsuarioProceso> existenteUsuarioProceso = usuarioProcesoRepository
                 .findUsuarioProcesoEnCurso(
                         usuarioOpt.get().getIdPersona(),
-                        subProcesoOpt.get().getIdSubProceso()
+                        subProcesoOpt.get().getId()
 
                 );
         if (existenteUsuarioProceso.isPresent())
@@ -223,7 +223,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
                         usuarioProcesoDTO.setIdsubProceso(usuarioProceso.getId());
                         usuarioProcesoDTO.setNombreUsuario(usuario.getNombreCompleto());
                         usuarioProcesoDTO.setId(idUsuarioProceso);
-                        usuarioProcesoDTO.setIdProceso(usuarioProceso.getSubProceso().getProceso().getIdproceso());
+                        usuarioProcesoDTO.setIdProceso(usuarioProceso.getSubProceso().getProceso().getId());
                         usuarioProcesoDTO.setDescripcionSubproceso(usuarioProceso.getSubProceso().getDescripcion());
                         usuarioProcesoDTO.setFechaInicio(usuarioProceso.getFechaInicio());
                         usuarioProcesoDTO.setFechaFin(usuarioProceso.getFechaFin());
@@ -249,14 +249,20 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         // Actualizar el UsuarioProceso con el nuevo usuario
         UsuarioProceso usuarioProceso = usuarioProcesoOpt.get();
         usuarioProceso.setUsuario(nuevoUsuarioOpt.get());
-        
         // Guardar el cambio en la base de datos
         UsuarioProceso usuarioProcesoActualizado = usuarioProcesoRepository.save(usuarioProceso);
-
         // Convertir la entidad actualizada a DTO y devolverla
-        return modelMapper.map(usuarioProcesoActualizado, UsuarioProcesoDTO.class);
+        UsuarioProcesoDTO usuarioProcesoDTO = new UsuarioProcesoDTO();
+        usuarioProcesoDTO.setId(usuarioProcesoActualizado.getId());
+        usuarioProcesoDTO.setEstado(usuarioProcesoActualizado.getEstado());
+        usuarioProcesoDTO.setFechaInicio(usuarioProcesoActualizado.getFechaInicio());
+        usuarioProcesoDTO.setFechaFin(usuarioProcesoActualizado.getFechaFin());
+        usuarioProcesoDTO.setIdusuario(usuarioProcesoActualizado.getUsuario().getDocumento());
+        usuarioProcesoDTO.setIdsubProceso(usuarioProcesoActualizado.getSubProceso().getId());
+        usuarioProcesoDTO.setIdProceso(usuarioProcesoActualizado.getSubProceso().getProceso().getId());
+        usuarioProcesoDTO.setDescripcionSubproceso(usuarioProcesoActualizado.getSubProceso().getDescripcion());
+        usuarioProcesoDTO.setNombreUsuario(usuarioProcesoActualizado.getUsuario().getNombreCompleto());
+        usuarioProcesoDTO.setEnlace(usuarioProcesoActualizado.getEnlace());
+        return  usuarioProcesoDTO;
     }
-
-
-
 }

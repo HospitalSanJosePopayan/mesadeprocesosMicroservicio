@@ -44,9 +44,9 @@ public class ProcesoController {
         return new ResponseEntity<>(procesoService.crearProceso(procesoDTO), HttpStatus.CREATED);
     }
     @Operation(summary = "Actualiza un Proceso  mediante su Id")
-    @PutMapping("/{idproceso}")
-    public  ResponseEntity<ProcesoDTO> actualizarProceso(@PathVariable(name = "idproceso") Integer idproceso, @RequestBody ProcesoDTO procesoDTO) {
-        return new ResponseEntity<>(procesoService.actualizarProceso(idproceso, procesoDTO), HttpStatus.CREATED);
+    @PutMapping("/{id}")
+    public  ResponseEntity<ProcesoDTO> actualizarProceso(@PathVariable(name = "id") Integer id, @RequestBody ProcesoDTO procesoDTO) {
+        return new ResponseEntity<>(procesoService.actualizarProceso(id, procesoDTO), HttpStatus.CREATED);
     }
 
 }

@@ -11,7 +11,7 @@ import lombok.Data;
 public class Proceso {
     @Id
     @Column(name="id_proceso")
-    private Integer idproceso;
+    private Integer id;
     private String nombre;
     private String descripcion;
 
