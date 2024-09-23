@@ -218,6 +218,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         }
         List<UsuarioProcesoDTO> responseusuariosprocesos = new ArrayList<>();
         Set<Integer> idUsuarioProcesoUnicos = new HashSet<>();
+
         for (UsuarioProceso usuarioProceso : usuarioProcesos) {
             Integer idUsuarioProceso = usuarioProceso.getId();
             if (!idUsuarioProcesoUnicos.contains(idUsuarioProceso)) {
