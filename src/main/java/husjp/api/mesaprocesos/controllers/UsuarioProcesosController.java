@@ -2,20 +2,13 @@ package husjp.api.mesaprocesos.controllers;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
-import husjp.api.mesaprocesos.config.JwtContext;
-import husjp.api.mesaprocesos.request.ApiGatewayServiceRequest;
 import husjp.api.mesaprocesos.service.UtilidadesService;
-import husjp.api.mesaprocesos.service.dto.AuthenticationRequest;
-import husjp.api.mesaprocesos.service.dto.AuthenticationResponse;
 import husjp.api.mesaprocesos.service.dto.UsuarioProcesobodyDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;

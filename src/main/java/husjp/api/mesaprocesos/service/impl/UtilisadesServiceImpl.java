@@ -20,6 +20,8 @@ public class UtilisadesServiceImpl implements UtilidadesService {
     private JwtContext jwtContext;
 
 
+    // el objeto data es un list de objetos que se van a exportar a excel
+    // puede ser un list cuyos datos tengan el formato {"nombre": "nombre", "apellido": "apellido"}
     @Override
     public byte[] generarExcel(HttpServletRequest request, Object data) {
         String username = (String) request.getAttribute("username");
