@@ -2,9 +2,20 @@ package husjp.api.mesaprocesos.controllers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
+import husjp.api.mesaprocesos.config.JwtContext;
+import husjp.api.mesaprocesos.request.ApiGatewayServiceRequest;
+import husjp.api.mesaprocesos.service.UtilidadesService;
+import husjp.api.mesaprocesos.service.dto.AuthenticationRequest;
+import husjp.api.mesaprocesos.service.dto.AuthenticationResponse;
 import husjp.api.mesaprocesos.service.dto.UsuarioProcesobodyDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +39,7 @@ import lombok.AllArgsConstructor;
 public class UsuarioProcesosController {
 
     private IUsuarioProcesoService usuarioProcesoService;
+    private UtilidadesService utilidadesService;
 
     @Operation(summary = "obtener todos los usuarios con subprocesos asignados")
     @GetMapping
@@ -75,5 +87,18 @@ public class UsuarioProcesosController {
         return usuarioProcesoService.transferirSubprocesoAUsuario(idUsuarioProceso, nuevoUsuarioId);
     }
 
+    @Operation(summary = "Generar excel")
+    @GetMapping("/excel")
+    public ResponseEntity<byte[]> generarExcel(HttpServletRequest request) {
+        try{
+            byte[] response = utilidadesService.generarExcel(request, usuarioProcesoService.obtenerUsuariosprocesos());
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=usuariosprocesos.xlsx")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
