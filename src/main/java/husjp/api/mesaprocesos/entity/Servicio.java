@@ -7,12 +7,12 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "AreaServicio")
-public class AreaServicio {
+@Table(name = "servicio")
+public class Servicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idarea")
+    @Column(name = "id_servicio")
     private Integer id;
     private String nombre;
     private String tipo;

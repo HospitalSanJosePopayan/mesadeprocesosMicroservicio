@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import husjp.api.mesaprocesos.entity.AreaServicio;
+import husjp.api.mesaprocesos.entity.Servicio;
 import husjp.api.mesaprocesos.entity.Usuario;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import husjp.api.mesaprocesos.repository.AreaServicioRepository;
 import husjp.api.mesaprocesos.service.IAreaServicioService;
-import husjp.api.mesaprocesos.service.dto.AreaServicioDTO;
+import husjp.api.mesaprocesos.service.dto.ServicioDTO;
 import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
@@ -24,9 +24,9 @@ public class AreaServicioService implements IAreaServicioService {
     private AreaServicioRepository areaServicioRepository;
     private final ModelMapper modelMapper;
     @Override
-    public List<AreaServicioDTO> obtenerAreasServicio() {
-      List<AreaServicioDTO> areaDtos = areaServicioRepository.findAll().stream()
-        .map(area -> modelMapper.map(area, AreaServicioDTO.class))
+    public List<ServicioDTO> obtenerAreasServicio() {
+      List<ServicioDTO> areaDtos = areaServicioRepository.findAll().stream()
+        .map(area -> modelMapper.map(area, ServicioDTO.class))
         .collect(Collectors.toList());
       if (areaDtos.isEmpty()){
           throw  new EntidadNoExisteException("No existen Areas de Servicios Registradas");
@@ -35,7 +35,7 @@ public class AreaServicioService implements IAreaServicioService {
     }
     @Override
     public List<UsuarioDTO> buscarUsuarioporArea(Integer idArea) {
-        Optional<AreaServicio> areaOpt = areaServicioRepository.findById(idArea);
+        Optional<Servicio> areaOpt = areaServicioRepository.findById(idArea);
         if (areaOpt.isPresent()){
             if (!areaOpt.get().getUsuarios().isEmpty()){
                 List<UsuarioDTO> usuarioDTOs = new ArrayList<>();

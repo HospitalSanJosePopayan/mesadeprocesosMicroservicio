@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import husjp.api.mesaprocesos.entity.AreaServicio;
+import husjp.api.mesaprocesos.entity.Servicio;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteException;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadYaExiste;
@@ -74,7 +74,7 @@ public class ProcesoServiceImpl implements IProcesoService {
 			 throw  new EntidadYaExiste("El Nombre de este proceso ya se encuentra registrado ");
 		 }
 
-		Optional<AreaServicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
+		Optional<Servicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
 		if (areaServicioOpt.isPresent()) {
 			Proceso proceso = new Proceso();
 			proceso.setId(procesoDTO.getId());
@@ -99,7 +99,7 @@ public class ProcesoServiceImpl implements IProcesoService {
 			Proceso proceso = optionalProceso.get();
 			proceso.setNombre(procesoDTO.getNombre());
 			proceso.setDescripcion(procesoDTO.getDescripcion());
-			Optional<AreaServicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
+			Optional<Servicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
 			if (areaServicioOpt.isPresent()) {
 				proceso.setIdarea(areaServicioOpt.get());
 			} else {

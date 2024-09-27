@@ -34,7 +34,7 @@ public class Usuario  extends Persona {
             joinColumns = @JoinColumn(name = "id_persona"),
             inverseJoinColumns = @JoinColumn(name = "idarea")
     )
-    private Set<AreaServicio> areaServicios;
+    private Set<Servicio> areaServicios;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<UsuarioProceso> usuarioProcesos;

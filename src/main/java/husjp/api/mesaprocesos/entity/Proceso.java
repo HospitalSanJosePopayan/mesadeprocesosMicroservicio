@@ -20,6 +20,6 @@ public class Proceso {
 
      @ManyToOne
      @JoinColumn(name = "idArea", nullable = false)
-     private  AreaServicio idarea;
+     private Servicio idarea;
 
 }
