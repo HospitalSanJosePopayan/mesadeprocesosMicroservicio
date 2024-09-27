@@ -58,6 +58,7 @@ public class SecurityConfig {
                         authorizeRequests.requestMatchers(HttpMethod.PUT,"usuarioprocesos/estado/{proceso}").hasAnyRole("ADMIN","MESADEPROCESOS_USER");
                         authorizeRequests.requestMatchers(HttpMethod.DELETE,"usuarioprocesos/{id}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
                         authorizeRequests.requestMatchers(HttpMethod.DELETE,"usuarioprocesos/transferir").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
+                        authorizeRequests.requestMatchers(HttpMethod.DELETE,"usuarioprocesos/excel/{idArea}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
                         
                         authorizeRequests.anyRequest().authenticated();
                     }
