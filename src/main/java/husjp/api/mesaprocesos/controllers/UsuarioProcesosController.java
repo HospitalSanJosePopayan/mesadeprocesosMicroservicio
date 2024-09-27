@@ -81,10 +81,10 @@ public class UsuarioProcesosController {
     }
 
     @Operation(summary = "Generar excel")
-    @GetMapping("/excel")
-    public ResponseEntity<byte[]> generarExcel(HttpServletRequest request) {
+    @GetMapping("/excel/{idArea}")
+    public ResponseEntity<byte[]> generarExcel(HttpServletRequest request, @PathVariable(name= "idArea")Integer idArea) {
         try{
-            byte[] response = utilidadesService.generarExcel(request, usuarioProcesoService.obtenerUsuariosprocesos());
+            byte[] response = utilidadesService.generarExcel(request, usuarioProcesoService.obtenerUsuarioProcesoAreaExcel(idArea));
             return ResponseEntity.ok()
                     .header("Content-Disposition", "attachment; filename=usuariosprocesos.xlsx")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -93,5 +93,8 @@ public class UsuarioProcesosController {
             throw new RuntimeException(e);
         }
     }
+
+
+
 
 }

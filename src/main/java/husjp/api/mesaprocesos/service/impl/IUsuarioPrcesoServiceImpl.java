@@ -3,12 +3,14 @@ package husjp.api.mesaprocesos.service.impl;
 import java.lang.Error;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import husjp.api.mesaprocesos.entity.Proceso;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.*;
 import husjp.api.mesaprocesos.repository.ProcesoRepository;
+import husjp.api.mesaprocesos.service.dto.UsuarioProcesoExcelDTO;
 import husjp.api.mesaprocesos.service.dto.UsuarioProcesobodyDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -238,7 +240,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         }
         return responseusuariosprocesos;
     }
-
+    
     @Override
     public UsuarioProcesoDTO transferirSubprocesoAUsuario(Integer idUsuarioProceso, String nuevoUsuarioId) {
         Optional<UsuarioProceso> usuarioProcesoOpt = usuarioProcesoRepository.findById(idUsuarioProceso);
@@ -272,4 +274,56 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         usuarioProcesoDTO.setEnlace(usuarioProcesoActualizado.getEnlace());
         return  usuarioProcesoDTO;
     }
+
+    @Override
+    public List<UsuarioProcesoExcelDTO> obtenerUsuarioProcesoAreaExcel(Integer idArea) {
+
+        if (idArea == null || idArea <= 0) {
+            throw new Error("El id del área no puede ser nulo o negativo");
+        }
+        List<UsuarioProceso> usuarioProcesos = usuarioProcesoRepository.usuariosPorArea(idArea);
+        if (usuarioProcesos == null || usuarioProcesos.isEmpty()) {
+            throw new EntidadSinAsignaciones("El área seleccionada no tiene asignaciones de procesos");
+        }
+        List<UsuarioProcesoExcelDTO> responseUsuariosProcesos = new ArrayList<>();
+        Set<Integer> idUsuarioProcesoUnicos = new HashSet<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (UsuarioProceso usuarioProceso : usuarioProcesos) {
+            Integer idUsuarioProceso = usuarioProceso.getId();
+            if (!idUsuarioProcesoUnicos.contains(idUsuarioProceso)) {
+                idUsuarioProcesoUnicos.add(idUsuarioProceso);
+                UsuarioProcesoExcelDTO usuarioProcesoExcelDTO = new UsuarioProcesoExcelDTO();
+                usuarioProcesoExcelDTO.setIdUsuarioProceso(usuarioProceso.getId());
+                usuarioProcesoExcelDTO.setDocumento(usuarioProceso.getUsuario().getDocumento());
+                usuarioProcesoExcelDTO.setNombreUsuario(usuarioProceso.getUsuario().getNombreCompleto());
+                usuarioProcesoExcelDTO.setIdProceso(usuarioProceso.getSubProceso().getProceso().getId());
+                usuarioProcesoExcelDTO.setNombreSubProceso(usuarioProceso.getSubProceso().getNombreSubproceso());
+                usuarioProcesoExcelDTO.setDescripcionSubproceso(usuarioProceso.getSubProceso().getDescripcion());
+                usuarioProcesoExcelDTO.setDescripcionSubproceso(usuarioProceso.getSubProceso().getDescripcion());
+                String estado;
+                switch (usuarioProceso.getEstado()) {
+                    case 1:
+                        estado = "Pendiente";
+                        break;
+                    case 2:
+                        estado = "Finalizado";
+                        break;
+                    case 3:
+                        estado = "Atrasado";
+                        break;
+                    default:
+                        estado = "Desconocido";
+                }
+                usuarioProcesoExcelDTO.setEstado(estado);
+                usuarioProcesoExcelDTO.setFechaInicioProceso(usuarioProceso.getFechaInicio().format(formatter));
+                if (usuarioProceso.getFechaFin() != null) {
+                    usuarioProcesoExcelDTO.setFechaFinProceso(usuarioProceso.getFechaFin().format(formatter));
+                }
+                usuarioProcesoExcelDTO.setEnlace(usuarioProceso.getEnlace());
+                responseUsuariosProcesos.add(usuarioProcesoExcelDTO);
+            }
+        }
+        return responseUsuariosProcesos;
+    }
+
 }
