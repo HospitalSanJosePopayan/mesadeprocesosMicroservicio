@@ -30,11 +30,11 @@ public class Usuario  extends Persona {
     private Set<Rol> roles;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "areas_servicios_usuarios",
+            name = "servicios_usuarios",
             joinColumns = @JoinColumn(name = "id_persona"),
-            inverseJoinColumns = @JoinColumn(name = "idarea")
+            inverseJoinColumns = @JoinColumn(name = "id_servicio")
     )
-    private Set<Servicio> areaServicios;
+    private Set<Servicio> servicios;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<UsuarioProceso> usuarioProcesos;

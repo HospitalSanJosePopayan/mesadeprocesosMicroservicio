@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import husjp.api.mesaprocesos.service.IAreaServicioService;
+import husjp.api.mesaprocesos.service.IServicioService;
 import husjp.api.mesaprocesos.service.dto.ServicioDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -16,9 +16,9 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/AreaServicio")
 @CrossOrigin(origins = {"http://localhost:5173", "http://optimus:5173"})
-public class AreaServicioController {
+public class ServicioController {
 
-    private IAreaServicioService areaServicioService;
+    private IServicioService areaServicioService;
     @Operation(summary = "Listar todas las áreas de servicio Obtiene una lista de todas las áreas de servicio disponibles.")
     @GetMapping
     public ResponseEntity<List<ServicioDTO>> ListarAreasServicio() {

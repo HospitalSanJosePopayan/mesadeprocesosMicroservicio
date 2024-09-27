@@ -13,15 +13,15 @@ import husjp.api.mesaprocesos.service.dto.UsuarioDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import husjp.api.mesaprocesos.repository.AreaServicioRepository;
-import husjp.api.mesaprocesos.service.IAreaServicioService;
+import husjp.api.mesaprocesos.repository.ServicioRepository;
+import husjp.api.mesaprocesos.service.IServicioService;
 import husjp.api.mesaprocesos.service.dto.ServicioDTO;
 import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
-public class AreaServicioService implements IAreaServicioService {
+public class ServicioService implements IServicioService {
 
-    private AreaServicioRepository areaServicioRepository;
+    private ServicioRepository areaServicioRepository;
     private final ModelMapper modelMapper;
     @Override
     public List<ServicioDTO> obtenerAreasServicio() {

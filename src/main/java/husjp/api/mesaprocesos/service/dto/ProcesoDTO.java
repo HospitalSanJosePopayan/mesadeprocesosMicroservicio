@@ -11,5 +11,5 @@ public class ProcesoDTO {
 	   private Integer id;
 	    private String Nombre;
 	    private String descripcion;
-	    private Integer idarea;
+	    private Integer id_servicio;
 }

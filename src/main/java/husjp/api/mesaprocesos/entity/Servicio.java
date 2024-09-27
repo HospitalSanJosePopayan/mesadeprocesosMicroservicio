@@ -16,7 +16,7 @@ public class Servicio {
     private Integer id;
     private String nombre;
     private String tipo;
-    @ManyToMany(mappedBy = "areaServicios")
+    @ManyToMany(mappedBy = "servicios")
     private List<Usuario> usuarios;
 
 }
