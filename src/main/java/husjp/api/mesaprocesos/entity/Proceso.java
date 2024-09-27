@@ -19,7 +19,7 @@ public class Proceso {
     private List<SubProceso> subprocesos;
 
      @ManyToOne
-     @JoinColumn(name = "idArea", nullable = false)
-     private Servicio idarea;
+     @JoinColumn(name = "id_servicio", nullable = false)
+     private Servicio id_servicio;
 
 }

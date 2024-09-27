@@ -9,7 +9,7 @@ import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadNoExisteEx
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignaciones;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadYaExiste;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.OperacionNoPermitida;
-import husjp.api.mesaprocesos.repository.AreaServicioRepository;
+import husjp.api.mesaprocesos.repository.ServicioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ProcesoServiceImpl implements IProcesoService {
 	private ProcesoRepository procesosRepository;
-	private AreaServicioRepository areaServicioRepository;
+	private ServicioRepository areaServicioRepository;
 	private final ModelMapper modelMapper;
 	 @Override
 	  public List<ProcesoDTO> obtenerProcesos() {
@@ -36,7 +36,7 @@ public class ProcesoServiceImpl implements IProcesoService {
 					 procesoDTO.setId(proceso.getId());
 					 procesoDTO.setNombre(proceso.getNombre());
 					 procesoDTO.setDescripcion(proceso.getDescripcion());
-					 procesoDTO.setIdarea(proceso.getIdarea().getId());
+					 procesoDTO.setId_servicio(proceso.getId_servicio().getId());
 					 return procesoDTO;
 				 })
 				 .collect(Collectors.toList());
@@ -55,7 +55,7 @@ public class ProcesoServiceImpl implements IProcesoService {
 					procesoDTO.setId(proceso.getId());
 					procesoDTO.setNombre(proceso.getNombre());
 					procesoDTO.setDescripcion(proceso.getDescripcion());
-					procesoDTO.setIdarea(proceso.getIdarea().getId());
+					procesoDTO.setId_servicio(proceso.getId_servicio().getId());
 					return procesoDTO;
 				})
 				.collect(Collectors.toList());
@@ -69,24 +69,24 @@ public class ProcesoServiceImpl implements IProcesoService {
 		if (procesoopt.isPresent()) {
 			throw new EntidadYaExiste("El Id del proceso ya se encuentra Registrado");
 		}
-		 boolean existeNombre=procesosRepository.existsByNombreProceso(procesoDTO.getNombre(),procesoDTO.getIdarea());
+		 boolean existeNombre=procesosRepository.existsByNombreProceso(procesoDTO.getNombre(),procesoDTO.getId_servicio());
 		 if(existeNombre){
 			 throw  new EntidadYaExiste("El Nombre de este proceso ya se encuentra registrado ");
 		 }
 
-		Optional<Servicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
+		Optional<Servicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getId_servicio());
 		if (areaServicioOpt.isPresent()) {
 			Proceso proceso = new Proceso();
 			proceso.setId(procesoDTO.getId());
 			proceso.setNombre(procesoDTO.getNombre());
 			proceso.setDescripcion(procesoDTO.getDescripcion());
-			proceso.setIdarea(areaServicioOpt.get());
+			proceso.setId_servicio(areaServicioOpt.get());
 			Proceso savedProceso = procesosRepository.save(proceso);
 			ProcesoDTO savedProcesoDTO = new ProcesoDTO();
 			savedProcesoDTO.setId(savedProceso.getId());
 			savedProcesoDTO.setNombre(savedProceso.getNombre());
 			savedProcesoDTO.setDescripcion(savedProceso.getDescripcion());
-			savedProcesoDTO.setIdarea(savedProceso.getIdarea().getId());
+			savedProcesoDTO.setId_servicio(savedProceso.getId_servicio().getId());
 			return savedProcesoDTO;
 		}
 		throw new EntidadNoExisteException("El Area de Servicio No se encuentra Registrada");
@@ -99,9 +99,9 @@ public class ProcesoServiceImpl implements IProcesoService {
 			Proceso proceso = optionalProceso.get();
 			proceso.setNombre(procesoDTO.getNombre());
 			proceso.setDescripcion(procesoDTO.getDescripcion());
-			Optional<Servicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getIdarea());
+			Optional<Servicio> areaServicioOpt = areaServicioRepository.findById(procesoDTO.getId_servicio());
 			if (areaServicioOpt.isPresent()) {
-				proceso.setIdarea(areaServicioOpt.get());
+				proceso.setId_servicio(areaServicioOpt.get());
 			} else {
 				throw new EntidadNoExisteException("El Area de Servicio No se encuentra Registrada");
 			}
@@ -110,7 +110,7 @@ public class ProcesoServiceImpl implements IProcesoService {
 			updatedProcesoDTO.setId(updatedProceso.getId());
 			updatedProcesoDTO.setNombre(updatedProceso.getNombre());
 			updatedProcesoDTO.setDescripcion(updatedProceso.getDescripcion());
-			updatedProcesoDTO.setIdarea(updatedProceso.getIdarea().getId());
+			updatedProcesoDTO.setId_servicio(updatedProceso.getId_servicio().getId());
 			return updatedProcesoDTO;
 		} else {
 			throw new EntidadNoExisteException("No se encontro el proceso");

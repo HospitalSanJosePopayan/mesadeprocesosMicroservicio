@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import husjp.api.mesaprocesos.entity.Servicio;
 
-public  interface AreaServicioRepository extends JpaRepository<Servicio,Integer> {
+public  interface ServicioRepository extends JpaRepository<Servicio,Integer> {
 
 }
 
