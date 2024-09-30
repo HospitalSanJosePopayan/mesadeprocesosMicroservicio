@@ -12,9 +12,9 @@ public class OpenApiConfig {
 
     @Bean
     public GroupedOpenApi AreaServicio(@Value("2.3.0") String appVersion){
-        String [] paths = {"/AreaServicio/**"};
+        String [] paths = {"/servicio/**"};
         return GroupedOpenApi.builder()
-                .group("AreaServicio")
+                .group("servicio")
                 .addOpenApiCustomizer(openApi -> openApi.info(new Info().title("Area Servicio").version(appVersion)
                         .description("metodos que obtienen las Areas de Servicio Hospital San Jose ")))
                 .pathsToMatch(paths)
