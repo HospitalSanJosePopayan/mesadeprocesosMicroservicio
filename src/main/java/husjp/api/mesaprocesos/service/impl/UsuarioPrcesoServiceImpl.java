@@ -27,7 +27,7 @@ import husjp.api.mesaprocesos.service.dto.UsuarioProcesoDTO;
 import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
-public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
+public class UsuarioPrcesoServiceImpl implements IUsuarioProcesoService   {
 	private UsuarioProcesoRepository usuarioProcesoRepository;
     private SubProcesoRepository subProcesoRepository;
     private ProcesoRepository procesoRepository;
