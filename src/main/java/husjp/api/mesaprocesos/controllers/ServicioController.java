@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/AreaServicio")
+@RequestMapping("/servicio")
 @CrossOrigin(origins = {"http://localhost:5173", "http://optimus:5173"})
 public class ServicioController {
 
