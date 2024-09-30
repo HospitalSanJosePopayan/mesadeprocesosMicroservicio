@@ -176,7 +176,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             throw new EntidadNoExisteException("No se encontro el usuarioproceso ");
         }
     }
-    @Scheduled(cron = "0 0 0 6 * ?")
+    @Scheduled(cron = "0 0 0/6 * * ?")
    public void actualizarEstadosAutomáticamente() {
         List<UsuarioProceso> procesos = usuarioProcesoRepository.findAll();
         System.out.println("la fecha es "+ LocalDateTime.now());
@@ -187,7 +187,7 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             }
         });
     }
-    @Scheduled(cron= "0 0 0 22 * ?")
+    @Scheduled(cron= "0 0 0 1 * ?")
     public  void ElimiarUsuariosProcesosMensuales(){
       LocalDateTime hoy = LocalDateTime.now();
       List<Integer> estados = List.of(2,3);
