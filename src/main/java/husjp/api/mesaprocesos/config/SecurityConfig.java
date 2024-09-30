@@ -35,10 +35,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> {
                         authorizeRequests.requestMatchers(AUTH_WHITLIST).permitAll();
-//                        Area servicio
-                        authorizeRequests.requestMatchers(HttpMethod.GET,"AreaServicio").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
-                        authorizeRequests.requestMatchers(HttpMethod.GET,"AreaServicio/{id}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
-
+                        //servicio
+                        authorizeRequests.requestMatchers(HttpMethod.GET,"servicio").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
+                        authorizeRequests.requestMatchers(HttpMethod.GET,"servicio/{id}").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
                       // Procesos
                         authorizeRequests.requestMatchers(HttpMethod.GET,"procesos").hasAnyRole("ADMIN","MESADEPROCESOS_COORD", "MESADEPROCESOS_USER");
                         authorizeRequests.requestMatchers(HttpMethod.POST,"procesos").hasAnyRole("ADMIN","MESADEPROCESOS_COORD");
