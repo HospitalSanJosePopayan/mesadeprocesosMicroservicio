@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 @Entity
  @Data
- @Table(name = "UsuarioProceso")
+ @Table(name = "usuario_proceso")
 public class UsuarioProceso {
 
     @Id
@@ -21,13 +21,11 @@ public class UsuarioProceso {
     private String enlace;
 
     @ManyToOne
-    @JoinColumn(name="usuarioId", nullable = false)
+    @JoinColumn(name="usuario_id", nullable = false)
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "subprocesoId", nullable = false)
+    @JoinColumn(name = "subproceso_id", nullable = false)
     private SubProceso subProceso;
 
-
-    
 }

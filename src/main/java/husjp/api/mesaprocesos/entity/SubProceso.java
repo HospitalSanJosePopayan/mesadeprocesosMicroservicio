@@ -13,6 +13,7 @@ public class SubProceso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sub_proceso")
     private Integer id;
+    @Column(name = "nombre_subproceso")
     private String nombreSubproceso;
     private String descripcion;
     @ManyToOne
