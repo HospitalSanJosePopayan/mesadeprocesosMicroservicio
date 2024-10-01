@@ -41,7 +41,7 @@ jobs:
           desarrollohusjp/eurekaserver-image
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -49,8 +49,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build with Gradle inside Docker
+        run: |
+          docker run --rm \
+          --network network_postgres \
+          --network network_eureka \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          openjdk:21 \
+          ./gradlew build
 
       - name: login to Docker Hub
         uses: docker/login-action@v3
@@ -64,8 +71,11 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/microservices:mesaprosesos-image
 
       # Detener y remover los contenedores y la red
-      - name: Clean up Docker
+      - name: Stop and remove containers
         run: |
-          docker stop postgres eureka
-          docker rm postgres eureka
+          docker stop postgres
+          docker stop eureka
+          docker rm postgres
+          docker rm eureka
           docker network rm network_postgres
+          docker network rm network_eureka
