@@ -119,8 +119,10 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
         // Asignar entidades existentes
         LocalDate FechaInicio = usuarioSubProceso.getFechaInicio().toLocalDate();
         LocalDate FechaFin = usuarioSubProceso.getFechaFin().toLocalDate();
-        if(usuarioSubProceso.getFechaInicio().isBefore(LocalDateTime.now()) || usuarioSubProceso.getFechaFin().isBefore(usuarioSubProceso.getFechaInicio()) || FechaInicio.isEqual(FechaFin)){
-            throw new FechaFueraRango("Las fechas estan fuera de rango");
+        if (usuarioSubProceso.getFechaInicio().isBefore(LocalDateTime.now()) ||
+                usuarioSubProceso.getFechaFin().isBefore(usuarioSubProceso.getFechaInicio()) ||
+                (FechaInicio.isEqual(FechaFin) && usuarioSubProceso.getFechaFin().toLocalTime().isBefore(usuarioSubProceso.getFechaInicio().toLocalTime()))) {
+            throw new FechaFueraRango("Las fechas no son válidas: la fecha de inicio no puede ser pasada, la fecha de fin no puede ser anterior o igual a la fecha de inicio si es el mismo día.");
         }
         usuarioSubProceso.setSubProceso(subProcesoOpt.get());
         usuarioSubProceso.setUsuario(usuarioOpt.get());;
@@ -162,7 +164,6 @@ public class IUsuarioPrcesoServiceImpl  implements IUsuarioProcesoService   {
             throw new EntidadNoExisteException("No se encontro el usuarioproceso");
         }
     }
-
     @Override
     public UsuarioProcesoDTO actualizarUsuarioprocesoEstado(Integer idsubproceso, String enlace) {
         Optional<UsuarioProceso> usuOptional = usuarioProcesoRepository.findById(idsubproceso);
