@@ -13,6 +13,30 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
+      - name: Create Docker network
+        run: docker network create --subnet=192.168.18.0/24 my_network
+
+      - name: Run postgresSql container
+        run: |
+          docker run -d --name postgres \
+          --network my_network \
+          --ip 192.168.18.164 \
+          -e POSTGRES_USER=postgres \
+          -e POSTGRES_PASSWORD=system \
+          -e POSTGRES_DB=solutionv2produccion \
+          -p 5432:5432 \
+          postgres:15.0
+
+      - name: Run Eureka container
+        run: |
+          docker run -d --name eureka \
+          --network my_network \
+          --ip 192.168.10.35 '
+          -e EUREKA_CLIENT_REGISTER-WITH_EUREKA=false \
+          -e EUREKA_CLIENT_FETCH-REGISTRY=false \
+          -p 6666:6666 \
+          ${{ secrets.DOCKERHUB_USERNAME }}/eurekaserver-image
+
       - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
