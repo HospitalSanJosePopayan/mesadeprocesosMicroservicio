@@ -32,10 +32,10 @@ jobs:
           docker run -d --name eureka \
           --network my_network \
           --ip 192.168.10.35 \
-          -e EUREKA_CLIENT_REGISTER-WITH_EUREKA=false \
-          -e EUREKA_CLIENT_FETCH-REGISTRY=false \
+          -e EUREKA_CLIENT_REGISTER_WITH_EUREKA=false \
+          -e EUREKA_CLIENT_FETCH_REGISTRY=false \
           -p 6666:6666 \
-          ${{ secrets.DOCKERHUB_USERNAME }}/eurekaserver-image
+          desarrollohusjp/eurekaserver-image
 
       - name: Set up JDK 21
         uses: actions/setup-java@v2
