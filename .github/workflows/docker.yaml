@@ -57,7 +57,12 @@ jobs:
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           ubuntu:20.04 \
-          /bin/bash -c "apt-get update && apt-get install -y openjdk-21-gradle && ./gradlew build"
+          /bin/bash -c "apt-get update && \
+          apt-get install -y openjdk-21-jdk wget && \
+          wget https://services.gradle.org/distributions/gradle-8.2.1-bin.zip && \
+          unzip gradle-8.2.1-bin.zip -d /opt && \
+          ln -s /opt/gradle-8.2.1/bin/gradle /usr/bin/gradle && \
+          ./gradlew build"
 
       - name: login to Docker Hub
         uses: docker/login-action@v3
