@@ -58,7 +58,7 @@ jobs:
           -w /workspace \
           ubuntu:20.04 \
           /bin/bash -c "apt-get update && \
-          apt-get install -y openjdk-21-jdk wget && \
+          apt-get install -y openjdk-21-jdk unzip wget && \
           wget https://services.gradle.org/distributions/gradle-8.2.1-bin.zip && \
           unzip gradle-8.2.1-bin.zip -d /opt && \
           ln -s /opt/gradle-8.2.1/bin/gradle /usr/bin/gradle && \
