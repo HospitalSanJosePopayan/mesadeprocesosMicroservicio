@@ -5,3 +5,6 @@
 
 ## comanto para verificar estado
  `git ls-files -v | grep '^[[:lower:]]'`
+
+## reversar cambios
+`git update-index --no-assume-unchanged src/main/resources/application.properties`
