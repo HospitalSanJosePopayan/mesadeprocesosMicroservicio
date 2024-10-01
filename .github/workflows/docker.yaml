@@ -56,8 +56,8 @@ jobs:
           --network network_eureka \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
-          openjdk:21 \
-          ./gradlew build
+          ubuntu:20.04 \
+          /bin/bash -c "apt-get update && apt-get install -y openjdk-21-gradle && ./gradlew build"
 
       - name: login to Docker Hub
         uses: docker/login-action@v3
