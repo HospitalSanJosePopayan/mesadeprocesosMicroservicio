@@ -25,5 +25,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-docker-image:latest
-          labels: hola=world
+          tags: tag
+          labels: label
