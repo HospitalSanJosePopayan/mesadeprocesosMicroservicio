@@ -23,7 +23,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build -Dspring.profiles.active=ci
+#        ejecutar un perfil de Spring Boot diferente
+        run: ./gradlew build -Pprofile=ci
+        #run: ./gradlew build -Dspring.profiles.active=ci
 
       - name: login to Docker Hub
         uses: docker/login-action@v3
