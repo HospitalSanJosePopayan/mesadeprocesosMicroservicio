@@ -55,7 +55,7 @@ jobs:
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           gradle:8.10.2-jdk21-alpine \
-          ./gradlew build
+          ./gradlew bootJar
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/microservices:mesaprosesos-image .
