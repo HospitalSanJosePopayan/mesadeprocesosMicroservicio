@@ -27,22 +27,15 @@ jobs:
 
       - name: Run postgresSql container
         run: |
-          docker run -d --name postgres \
-          --network network_postgres \
-          --ip 192.168.18.164 \
-          -e POSTGRES_USER=postgres \
-          -e POSTGRES_PASSWORD=system \
-          -e POSTGRES_DB=solutionv2produccion \
+          docker run -d --name postgres --network network_postgres --ip 192.168.18.164 \
+          -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=system -e POSTGRES_DB=solutionv2produccion \
           -p 5432:5432 \
           postgres:15.0
 
       - name: Run Eureka container
         run: |
-          docker run -d --name eureka \
-          --network network_eureka \
-          --ip 192.168.10.35 \
-          -e EUREKA_CLIENT_REGISTER_WITH_EUREKA=false \
-          -e EUREKA_CLIENT_FETCH_REGISTRY=false \
+          docker run -d --name eureka --network network_eureka --ip 192.168.10.35 \
+          -e EUREKA_CLIENT_REGISTER_WITH_EUREKA=false -e EUREKA_CLIENT_FETCH_REGISTRY=false \
           -p 6666:6666 \
           desarrollohusjp/eurekaserver-image
 
@@ -58,16 +51,11 @@ jobs:
       - name: Build with Gradle inside Docker
         run: |
           docker run --rm \
-          --network network_postgres \
-          --network network_eureka \
+          --network network_postgres --network network_eureka \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           gradle:8.10.2-jdk21-alpine \
           ./gradlew build
-
-      #dar una espera de 5 segundos para que los contenedores se levanten
-      - name: Wait for 5 seconds
-        run: sleep 5
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/microservices:mesaprosesos-image .
