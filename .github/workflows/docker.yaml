@@ -62,7 +62,7 @@ jobs:
           --network network_eureka \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
-          gradle:8.2.1-jdk21 \
+          gradle:8.10.2-jdk21 \
           ./gradlew build
 
       #dar una espera de 5 segundos para que los contenedores se levanten
