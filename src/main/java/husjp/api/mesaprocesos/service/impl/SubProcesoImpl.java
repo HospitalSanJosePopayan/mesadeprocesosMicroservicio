@@ -78,7 +78,7 @@ public class SubProcesoImpl implements ISubProcesoService {
         Proceso proceso = procesosRepository.findById(subProcesoDTO.getIdproceso())
                 .orElseThrow(() -> new EntidadNoExisteException("Proceso no encontrado"));
         subProceso.setProceso(proceso);
-        List<SubProceso> listasubprocesos = subProcesoRepository.findAll();
+        
         SubProceso savedSubProceso = subProcesoRepository.save(subProceso);
         SubProcesoDTO savedSubProcesoDTO = new SubProcesoDTO();
         savedSubProcesoDTO.setId(savedSubProceso.getId());

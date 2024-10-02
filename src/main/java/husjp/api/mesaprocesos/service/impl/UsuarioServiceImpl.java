@@ -16,7 +16,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
 	@Override
 	public UsuarioDTO buscarPorDocumento(String documento) {
-		 Optional<Usuario> usuarioEntity = usuarioRepository.findById(documento);
+		 Optional<Usuario> usuarioEntity = usuarioRepository.findByDocumento(documento);
 	        if(usuarioEntity.isEmpty()) {
 	            throw new EntidadNoExisteException("Documento "+documento + "No existe en la BD");
 	        }

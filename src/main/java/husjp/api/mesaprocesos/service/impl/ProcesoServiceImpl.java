@@ -10,7 +10,6 @@ import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadSinAsignac
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.EntidadYaExiste;
 import husjp.api.mesaprocesos.exceptionsControllers.exceptions.OperacionNoPermitida;
 import husjp.api.mesaprocesos.repository.ServicioRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import husjp.api.mesaprocesos.entity.Proceso;
@@ -23,7 +22,7 @@ import lombok.AllArgsConstructor;
 public class ProcesoServiceImpl implements IProcesoService {
 	private ProcesoRepository procesosRepository;
 	private ServicioRepository areaServicioRepository;
-	private final ModelMapper modelMapper;
+	
 	 @Override
 	  public List<ProcesoDTO> obtenerProcesos() {
 		 List<Proceso> procesos = procesosRepository.findAll();

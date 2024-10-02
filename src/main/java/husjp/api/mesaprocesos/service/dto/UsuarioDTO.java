@@ -1,7 +1,5 @@
 package husjp.api.mesaprocesos.service.dto;
 
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 @Data
