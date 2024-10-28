@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "subproceso")
+@Table(name = "mp_subproceso")
 public class SubProceso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

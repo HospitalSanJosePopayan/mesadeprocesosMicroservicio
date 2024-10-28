@@ -7,10 +7,10 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name="proceso")
+@Table(name="mp_proceso")
 public class Proceso {
     @Id
-    @Column(name="id_proceso")
+    @Column(name="id_mp_proceso")
     private Integer id;
     private String nombre;
     private String descripcion;

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 @Entity
  @Data
- @Table(name = "usuario_proceso")
+ @Table(name = "usuario_mp_proceso")
 public class UsuarioProceso {
 
     @Id
